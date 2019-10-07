@@ -6,3 +6,6 @@ Fork from https://github.com/gen2brain/raylib-go/tree/master/raygui
 - Fix Combobox
 - Add Application, Dialog, Notification
 - Remove Toggle, Slider, Spinner
+
+
+![](example/rlyeh.gif)
