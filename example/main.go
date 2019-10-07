@@ -2,7 +2,8 @@ package main
 
 import (
 	"math/rand"
-	"rlyeh"
+
+	"github.com/basp1/rlyeh"
 
 	rl "github.com/gen2brain/raylib-go/raylib"
 )
