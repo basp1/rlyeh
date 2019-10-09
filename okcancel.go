@@ -14,7 +14,10 @@ func OkCancel(text string, onOk func()) *Dialog {
 	vbox.Add(NewLabel(Center, None, text))
 
 	hbox := NewHBox(Center, None)
-	hbox.Add(NewButton(Auto, None, "Ok", onOk))
+	hbox.Add(NewButton(Auto, None, "Ok", func() {
+		onOk()
+		dialog.Close()
+	}))
 	hbox.Add(NewButton(Auto, None, "Cancel", func() {
 		dialog.Close()
 	}))
