@@ -18,6 +18,7 @@ func main() {
 
 	dialog := rlyeh.OkCancel("Message", func() {
 		rlyeh.Notify(2, "Ok pressed...")
+		rlyeh.GetApplication().SetOption("text", "Bye")
 	})
 
 	app.Add(dialog)
@@ -40,7 +41,11 @@ func NewWindow(dialog *rlyeh.Dialog) *rlyeh.Window {
 	}))
 
 	hbox.Add(rlyeh.NewButton(rlyeh.Auto, rlyeh.None, "Notify", func() {
-		rlyeh.Notify(5, "Hello %s!", RandStringRunes(rand.Int()%10))
+		text := rlyeh.GetApplication().GetOption("text")
+		if nil == text {
+			text = "Hello"
+		}
+		rlyeh.Notify(5, "%s %s!", text, RandStringRunes(rand.Int()%10))
 	}))
 
 	hbox.Add(rlyeh.NewCheckbox(rlyeh.Auto, rlyeh.None))
