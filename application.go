@@ -160,9 +160,7 @@ func (self *Application) draw() {
 	}
 
 	for i := 0; i < len(notifications); i++ {
-		rl.DrawText(notifications[i].Text,
-			int32(notifications[i].Point.X), int32(notifications[i].Point.Y),
-			notifications[i].FontSize, notifications[i].Color)
+		notifications[i].Draw()
 	}
 
 	if nil != self.modal {

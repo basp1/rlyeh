@@ -18,6 +18,10 @@ type Notification struct {
 	Seconds  float32
 }
 
+func (self *Notification) Draw() {
+	rl.DrawText(self.Text, int32(self.Point.X), int32(self.Point.Y), self.FontSize, self.Color)
+}
+
 func Notify(seconds float32, format string, params ...interface{}) {
 	app := GetApplication()
 	if nil == app {
