@@ -147,15 +147,11 @@ func (self *Application) update(dt float32) {
 
 func (self *Application) draw() {
 	for _, window := range self.windows {
-		if window.IsActive() {
-			window.Draw()
-		}
+		window.Draw()
 	}
 	for _, dialog := range self.dialogs {
 		if self.modal != dialog {
-			if dialog.IsActive() {
-				dialog.Draw()
-			}
+			dialog.Draw()
 		}
 	}
 
