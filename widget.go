@@ -26,6 +26,8 @@ type Container interface {
 	Update(float32)
 	Draw()
 	Add(Widget)
+	IsActive() bool
+	SetActive(bool)
 }
 
 type Size struct {

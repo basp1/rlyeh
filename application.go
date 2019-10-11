@@ -112,19 +112,23 @@ func (self *Application) Close() {
 
 func (self *Application) update(dt float32) {
 	for _, dialog := range self.dialogs {
-		if dialog.Modal && dialog.IsOpen() {
+		if dialog.Modal && dialog.IsActive() {
 			self.modal = dialog
 		}
 	}
 
-	if nil != self.modal && self.modal.IsOpen() {
+	if nil != self.modal && self.modal.IsActive() {
 		self.modal.Update(dt)
 	} else {
 		for _, window := range self.windows {
-			window.Update(dt)
+			if window.IsActive() {
+				window.Update(dt)
+			}
 		}
 		for _, dialog := range self.dialogs {
-			dialog.Update(dt)
+			if dialog.IsActive() {
+				dialog.Update(dt)
+			}
 		}
 	}
 
@@ -143,11 +147,15 @@ func (self *Application) update(dt float32) {
 
 func (self *Application) draw() {
 	for _, window := range self.windows {
-		window.Draw()
+		if window.IsActive() {
+			window.Draw()
+		}
 	}
 	for _, dialog := range self.dialogs {
 		if self.modal != dialog {
-			dialog.Draw()
+			if dialog.IsActive() {
+				dialog.Draw()
+			}
 		}
 	}
 

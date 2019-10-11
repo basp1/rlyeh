@@ -7,8 +7,7 @@ import (
 type Window struct {
 	id int32
 
-	Active  bool
-	Visible bool
+	active bool
 
 	bounds  rl.Rectangle
 	widgets []Widget
@@ -18,8 +17,7 @@ func NewWindow(bounds rl.Rectangle, widgets ...Widget) *Window {
 	self := &Window{}
 
 	self.id = nextId()
-	self.Active = true
-	self.Visible = true
+	self.active = true
 	self.bounds = bounds
 
 	self.widgets = []Widget{}
@@ -47,7 +45,7 @@ func (self *Window) Add(widget Widget) {
 }
 
 func (self *Window) Update(dt float32) {
-	if !self.Active {
+	if !self.IsActive() {
 		return
 	}
 
@@ -59,7 +57,7 @@ func (self *Window) Update(dt float32) {
 }
 
 func (self *Window) Draw() {
-	if !self.Visible {
+	if !self.IsActive() {
 		return
 	}
 
@@ -80,4 +78,12 @@ func (self *Window) Draw() {
 
 		widget.Draw()
 	}
+}
+
+func (self *Window) IsActive() bool {
+	return self.active
+}
+
+func (self *Window) SetActive(value bool) {
+	self.active = value
 }

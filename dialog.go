@@ -44,7 +44,7 @@ func (self *Dialog) Add(widget Widget) {
 }
 
 func (self *Dialog) Update(dt float32) {
-	if !self.window.Active {
+	if !self.window.IsActive() {
 		return
 	}
 
@@ -91,7 +91,7 @@ func (self *Dialog) GetDataSize() Size {
 }
 
 func (self *Dialog) Draw() {
-	if !self.window.Visible {
+	if !self.window.IsActive() {
 		return
 	}
 
@@ -113,16 +113,18 @@ func (self *Dialog) Draw() {
 	self.window.Draw()
 }
 
-func (self *Dialog) IsOpen() bool {
-	return self.window.Active && self.window.Visible
+func (self *Dialog) IsActive() bool {
+	return self.window.IsActive()
 }
 
-func (self *Dialog) Open() {
-	self.window.Active = true
-	self.window.Visible = true
+func (self *Dialog) SetActive(value bool) {
+	self.window.SetActive(value)
 }
 
 func (self *Dialog) Close() {
-	self.window.Active = false
-	self.window.Visible = false
+	self.SetActive(false)
+}
+
+func (self *Dialog) Open() {
+	self.SetActive(true)
 }
