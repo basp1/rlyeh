@@ -22,10 +22,12 @@ type Widget interface {
 	Draw()
 }
 
-type Container interface {
+type Form interface {
 	Update(float32)
 	Draw()
+
 	Add(Widget)
+
 	IsActive() bool
 	SetActive(bool)
 }
