@@ -154,3 +154,7 @@ func (self *VBox) Draw() {
 		y += newBounds.Height + float32(style[GlobalPadding])
 	}
 }
+
+func (self *VBox) GetWidgets() []Widget {
+	return self.Widgets
+}

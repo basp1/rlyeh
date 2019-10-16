@@ -29,3 +29,10 @@ type Container interface {
 	IsActive() bool
 	SetActive(bool)
 }
+
+type Layout interface {
+	Widget
+
+	Add(Widget)
+	GetWidgets() []Widget
+}

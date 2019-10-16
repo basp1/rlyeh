@@ -154,3 +154,7 @@ func (self *HBox) Draw() {
 		x += newBounds.Width + float32(style[GlobalPadding])
 	}
 }
+
+func (self *HBox) GetWidgets() []Widget {
+	return self.Widgets
+}

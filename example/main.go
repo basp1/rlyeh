@@ -32,7 +32,7 @@ func main() {
 func NewWindow(dialog *rlyeh.Dialog) *rlyeh.Window {
 	window := rlyeh.NewWindow(rl.NewRectangle(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT))
 
-	vbox := rlyeh.NewVBox(rlyeh.Auto, rlyeh.Both)
+	var vbox rlyeh.Layout = rlyeh.NewVBox(rlyeh.Auto, rlyeh.Both)
 	vbox.Add(rlyeh.NewLabel(rlyeh.Auto, rlyeh.Both, "Label"))
 
 	hbox := rlyeh.NewHBox(rlyeh.Center, rlyeh.None)
