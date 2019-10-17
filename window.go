@@ -87,3 +87,11 @@ func (self *Window) IsActive() bool {
 func (self *Window) SetActive(value bool) {
 	self.active = value
 }
+
+func (self *Window) IsModal() bool {
+	return false
+}
+
+func (self *Window) IsMovable() bool {
+	return false
+}

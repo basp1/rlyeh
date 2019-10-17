@@ -13,14 +13,14 @@ type Dialog struct {
 	dragState State
 	dragPoint rl.Vector2
 
-	Modal bool
+	modal bool
 }
 
 func NewDialog(bounds rl.Rectangle, widgets ...Widget) *Dialog {
 	self := &Dialog{}
 
 	self.id = nextId()
-	self.Modal = true
+	self.modal = true
 
 	bounds.Y += float32(style[GlobalBorderHeight])
 	self.window = NewWindow(bounds)
@@ -127,4 +127,12 @@ func (self *Dialog) Close() {
 
 func (self *Dialog) Open() {
 	self.SetActive(true)
+}
+
+func (self *Dialog) IsModal() bool {
+	return self.modal
+}
+
+func (self *Dialog) IsMovable() bool {
+	return true
 }

@@ -20,9 +20,9 @@ type Application struct {
 	Height int
 	Title  string
 
-	dialogs []*Dialog
-	forms []Form
-	modal   *Dialog
+	movables []Form
+	forms    []Form
+	modal    Form
 
 	options map[string]interface{}
 }
@@ -34,7 +34,7 @@ func NewApplication(width, height int, title string) *Application {
 	self.Height = height
 	self.Title = title
 
-	self.dialogs = make([]*Dialog, 0)
+	self.movables = make([]Form, 0)
 	self.forms = make([]Form, 0)
 	self.modal = nil
 
@@ -67,19 +67,16 @@ func (self *Application) RemoveOption(name string) {
 }
 
 func (self *Application) Add(form Form) {
-	switch obj := form.(type) {
-	case *Dialog:
-		self.dialogs = append(self.dialogs, obj)
-		break
-	default:
-		self.forms = append(self.forms, obj)
-		break
+	if form.IsMovable() {
+		self.movables = append(self.movables, form)
+	} else {
+		self.forms = append(self.forms, form)
 	}
 }
 
 func (self *Application) Run() {
-	for _, dialog := range self.dialogs {
-		dialog.Close()
+	for _, movable := range self.movables {
+		movable.SetActive(false)
 	}
 
 	frameTime := time.Now().UTC().UnixNano()
@@ -111,23 +108,23 @@ func (self *Application) Close() {
 }
 
 func (self *Application) update(dt float32) {
-	for _, dialog := range self.dialogs {
-		if dialog.Modal && dialog.IsActive() {
-			self.modal = dialog
+	for _, movable := range self.movables {
+		if movable.IsModal() && movable.IsActive() {
+			self.modal = movable
 		}
 	}
 
 	if nil != self.modal && self.modal.IsActive() {
 		self.modal.Update(dt)
 	} else {
-		for _, window := range self.forms {
-			if window.IsActive() {
-				window.Update(dt)
+		for _, form := range self.forms {
+			if form.IsActive() {
+				form.Update(dt)
 			}
 		}
-		for _, dialog := range self.dialogs {
-			if dialog.IsActive() {
-				dialog.Update(dt)
+		for _, movable := range self.movables {
+			if movable.IsActive() {
+				movable.Update(dt)
 			}
 		}
 	}
@@ -146,12 +143,12 @@ func (self *Application) update(dt float32) {
 }
 
 func (self *Application) draw() {
-	for _, window := range self.forms {
-		window.Draw()
+	for _, form := range self.forms {
+		form.Draw()
 	}
-	for _, dialog := range self.dialogs {
-		if self.modal != dialog {
-			dialog.Draw()
+	for _, movable := range self.movables {
+		if self.modal != movable {
+			movable.Draw()
 		}
 	}
 

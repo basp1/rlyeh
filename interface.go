@@ -30,6 +30,9 @@ type Form interface {
 
 	IsActive() bool
 	SetActive(bool)
+
+	IsModal() bool
+	IsMovable() bool
 }
 
 type Layout interface {
