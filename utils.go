@@ -23,7 +23,7 @@ type Size struct {
 	Height float32
 }
 
-func getState(bounds rl.Rectangle) State {
+func GetState(bounds rl.Rectangle) State {
 	state := Normal
 
 	mousePoint := rl.GetMousePosition()

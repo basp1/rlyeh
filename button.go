@@ -76,7 +76,7 @@ func (self *Button) GetDataSize() Size {
 }
 
 func (self *Button) Update(dt float32) {
-	state := getState(self.Bounds)
+	state := GetState(self.Bounds)
 
 	if Released == state && Pressed == self.State && nil != self.OnClick {
 		self.OnClick()

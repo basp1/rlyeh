@@ -72,7 +72,7 @@ func (self *Checkbox) GetDataSize() Size {
 }
 
 func (self *Checkbox) Update(dt float32) {
-	state := getState(self.Bounds)
+	state := GetState(self.Bounds)
 	if Released == state {
 		self.Checked = !self.Checked
 	}

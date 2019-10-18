@@ -54,7 +54,7 @@ func (self *Dialog) Update(dt float32) {
 	borderBounds.Y -= float32(style[GlobalBorderHeight])
 	borderBounds.Height = float32(style[GlobalBorderHeight])
 
-	borderState := getState(borderBounds)
+	borderState := GetState(borderBounds)
 
 	if !pressed {
 		self.dragState = Normal
