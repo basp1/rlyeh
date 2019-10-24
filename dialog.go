@@ -48,6 +48,11 @@ func (self *Dialog) Update(dt float32) {
 		return
 	}
 
+	if rl.IsKeyPressed(rl.KeyEscape) {
+		self.window.SetActive(false)
+		return
+	}
+
 	pressed := rl.IsMouseButtonDown(rl.MouseLeftButton)
 
 	borderBounds := self.window.GetBounds()
