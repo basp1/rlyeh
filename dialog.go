@@ -7,8 +7,7 @@ import (
 type Dialog struct {
 	id int32
 
-	widgets []Widget
-	window  *Window
+	window *Window
 
 	dragState State
 	dragPoint rl.Vector2
@@ -25,7 +24,6 @@ func NewDialog(bounds rl.Rectangle, widgets ...Widget) *Dialog {
 	bounds.Y += float32(style[GlobalBorderHeight])
 	self.window = NewWindow(bounds)
 
-	self.widgets = []Widget{}
 	for _, widget := range widgets {
 		self.Add(widget)
 	}
@@ -38,9 +36,11 @@ func (self *Dialog) Add(widget Widget) {
 		widget.SetId(nextId())
 	}
 
-	self.widgets = append(self.widgets, widget)
-
 	self.window.Add(widget)
+}
+
+func (self *Dialog) Clear() {
+	self.window.widgets = self.window.widgets[:0]
 }
 
 func (self *Dialog) Update(dt float32) {
@@ -81,8 +81,8 @@ func (self *Dialog) Update(dt float32) {
 func (self *Dialog) GetDataSize() Size {
 	var dataSize Size
 
-	for i := 0; i < len(self.widgets); i++ {
-		widget := self.widgets[i]
+	for i := 0; i < len(self.window.widgets); i++ {
+		widget := self.window.widgets[i]
 		widgetSize := widget.GetDataSize()
 		if widgetSize.Width > dataSize.Width {
 			dataSize.Width = widgetSize.Width
