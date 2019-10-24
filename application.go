@@ -41,8 +41,10 @@ func NewApplication(width, height int, title string) *Application {
 	self.options = make(map[string]interface{})
 
 	rand.Seed(time.Now().UTC().UnixNano())
+
 	rl.InitWindow(int32(width), int32(height), title)
 	rl.SetTargetFPS(60)
+	rl.SetExitKey(-1)
 
 	application = self
 
