@@ -76,6 +76,43 @@ func (self *Application) Add(form Form) {
 	}
 }
 
+func findForm(forms []Form, form Form) int {
+	index := -1
+
+	for i, x := range forms {
+		if x == form {
+			index = i
+			break
+		}
+	}
+
+	return index
+}
+
+func deleteForm(forms []Form, index int) []Form {
+	if index < len(forms)-1 {
+		copy(forms[index:], forms[index+1:])
+	}
+	forms[len(forms)-1] = nil
+	forms = forms[:len(forms)-1]
+
+	return forms
+}
+
+func (self *Application) Remove(form Form) {
+	if form.IsMovable() {
+		index := findForm(self.movables, form)
+		if index >= 0 {
+			self.movables = deleteForm(self.movables, index)
+		}
+	} else {
+		index := findForm(self.forms, form)
+		if index >= 0 {
+			self.forms = deleteForm(self.forms, index)
+		}
+	}
+}
+
 func (self *Application) Run() {
 	for _, movable := range self.movables {
 		movable.SetActive(false)
