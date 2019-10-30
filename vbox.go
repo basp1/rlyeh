@@ -88,7 +88,7 @@ func (self *VBox) GetDataSize() Size {
 		size.Height += widgetSize.Height
 	}
 
-	size.Height += float32(int(style[GlobalPadding]) * (1 + len(self.Widgets)))
+	size.Height += float32(int(style.GlobalPadding) * (1 + len(self.Widgets)))
 
 	return size
 }
@@ -101,7 +101,7 @@ func (self *VBox) Update(dt float32) {
 }
 
 func (self *VBox) Draw() {
-	y := self.Bounds.Y + float32(style[GlobalPadding])
+	y := self.Bounds.Y + float32(style.GlobalPadding)
 	bounds := self.Bounds
 
 	fillers := 0
@@ -151,7 +151,7 @@ func (self *VBox) Draw() {
 
 		widget.Draw()
 
-		y += newBounds.Height + float32(style[GlobalPadding])
+		y += newBounds.Height + float32(style.GlobalPadding)
 	}
 }
 

@@ -146,6 +146,10 @@ func (self *Application) Close() {
 	rl.CloseWindow()
 }
 
+func (self *Application) GetStyle() *Style {
+	return style
+}
+
 func (self *Application) update(dt float32) {
 	for _, movable := range self.movables {
 		if movable.IsModal() && movable.IsActive() {
@@ -173,7 +177,7 @@ func (self *Application) update(dt float32) {
 	for i := 0; i < len(notifications); i++ {
 		notifications[i].Seconds -= dt
 		if notifications[i].Seconds > 0 {
-			height -= float32(style[GlobalTextFontsize])
+			height -= float32(style.GlobalTextFontsize)
 			notifications[i].Point.Y = height
 			filtered = append(filtered, notifications[i])
 		}

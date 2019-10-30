@@ -21,7 +21,7 @@ func NewDialog(bounds rl.Rectangle, widgets ...Widget) *Dialog {
 	self.id = nextId()
 	self.modal = true
 
-	bounds.Y += float32(style[GlobalBorderHeight])
+	bounds.Y += float32(style.GlobalBorderHeight)
 	self.window = NewWindow(bounds)
 
 	for _, widget := range widgets {
@@ -56,8 +56,8 @@ func (self *Dialog) Update(dt float32) {
 	pressed := rl.IsMouseButtonDown(rl.MouseLeftButton)
 
 	borderBounds := self.window.GetBounds()
-	borderBounds.Y -= float32(style[GlobalBorderHeight])
-	borderBounds.Height = float32(style[GlobalBorderHeight])
+	borderBounds.Y -= float32(style.GlobalBorderHeight)
+	borderBounds.Height = float32(style.GlobalBorderHeight)
 
 	borderState := GetState(borderBounds)
 
@@ -111,9 +111,9 @@ func (self *Dialog) Draw() {
 	self.window.SetBounds(bounds)
 
 	b := bounds.ToInt32()
-	rl.DrawRectangle(b.X, b.Y-int32(style[GlobalBorderHeight]), b.Width, int32(style[GlobalBorderHeight]), GetColor(GlobalBorderColor))
-	rl.DrawRectangle(b.X, b.Y, b.Width, b.Height, GetColor(GlobalBackgroundColor))
-	rl.DrawRectangleLines(b.X, b.Y, b.Width, b.Height, GetColor(GlobalLinesColor))
+	rl.DrawRectangle(b.X, b.Y-int32(style.GlobalBorderHeight), b.Width, int32(style.GlobalBorderHeight), style.GlobalBorderColor)
+	rl.DrawRectangle(b.X, b.Y, b.Width, b.Height, style.GlobalBackgroundColor)
+	rl.DrawRectangleLines(b.X, b.Y, b.Width, b.Height, style.GlobalLinesColor)
 
 	self.window.Draw()
 }

@@ -66,11 +66,11 @@ func (self *Button) GetFill() Fill {
 func (self *Button) GetDataSize() Size {
 	var size Size
 
-	size.Width = float32(rl.MeasureText(self.Text, int32(style[GlobalTextFontsize])))
-	size.Height = float32(style[GlobalTextFontsize])
+	size.Width = float32(rl.MeasureText(self.Text, int32(style.GlobalTextFontsize)))
+	size.Height = float32(style.GlobalTextFontsize)
 
-	size.Width += float32(style[ButtonTextPadding])
-	size.Height += float32(style[ButtonTextPadding]) / 2
+	size.Width += float32(style.ButtonTextPadding)
+	size.Height += float32(style.ButtonTextPadding) / 2
 
 	return size
 }
@@ -92,25 +92,25 @@ func (self *Button) Draw() {
 
 	switch state {
 	case Released:
-		rl.DrawRectangle(b.X, b.Y, b.Width, b.Height, GetColor(ButtonDefaultBorderColor))
-		rl.DrawRectangle(b.X+int32(style[ButtonBorderWidth]), b.Y+int32(style[ButtonBorderWidth]), b.Width-(2*int32(style[ButtonBorderWidth])), b.Height-(2*int32(style[ButtonBorderWidth])), GetColor(ButtonDefaultInsideColor))
-		rl.DrawText(text, b.X+((b.Width/2)-(rl.MeasureText(text, int32(style[GlobalTextFontsize]))/2)), b.Y+((b.Height/2)-(int32(style[GlobalTextFontsize])/2)), int32(style[GlobalTextFontsize]), GetColor(ButtonDefaultTextColor))
+		rl.DrawRectangle(b.X, b.Y, b.Width, b.Height, style.ButtonDefaultBorderColor)
+		rl.DrawRectangle(b.X+int32(style.ButtonBorderWidth), b.Y+int32(style.ButtonBorderWidth), b.Width-(2*int32(style.ButtonBorderWidth)), b.Height-(2*int32(style.ButtonBorderWidth)), style.ButtonDefaultInsideColor)
+		rl.DrawText(text, b.X+((b.Width/2)-(rl.MeasureText(text, int32(style.GlobalTextFontsize))/2)), b.Y+((b.Height/2)-(int32(style.GlobalTextFontsize)/2)), int32(style.GlobalTextFontsize), style.ButtonDefaultTextColor)
 	case Normal:
-		rl.DrawRectangle(b.X, b.Y, b.Width, b.Height, GetColor(ButtonDefaultBorderColor))
-		rl.DrawRectangle(b.X+int32(style[ButtonBorderWidth]), b.Y+int32(style[ButtonBorderWidth]), b.Width-(2*int32(style[ButtonBorderWidth])), b.Height-(2*int32(style[ButtonBorderWidth])), GetColor(ButtonDefaultInsideColor))
-		rl.DrawText(text, b.X+((b.Width/2)-(rl.MeasureText(text, int32(style[GlobalTextFontsize]))/2)), b.Y+((b.Height/2)-(int32(style[GlobalTextFontsize])/2)), int32(style[GlobalTextFontsize]), GetColor(ButtonDefaultTextColor))
+		rl.DrawRectangle(b.X, b.Y, b.Width, b.Height, style.ButtonDefaultBorderColor)
+		rl.DrawRectangle(b.X+int32(style.ButtonBorderWidth), b.Y+int32(style.ButtonBorderWidth), b.Width-(2*int32(style.ButtonBorderWidth)), b.Height-(2*int32(style.ButtonBorderWidth)), style.ButtonDefaultInsideColor)
+		rl.DrawText(text, b.X+((b.Width/2)-(rl.MeasureText(text, int32(style.GlobalTextFontsize))/2)), b.Y+((b.Height/2)-(int32(style.GlobalTextFontsize)/2)), int32(style.GlobalTextFontsize), style.ButtonDefaultTextColor)
 		break
 
 	case Focused:
-		rl.DrawRectangle(b.X, b.Y, b.Width, b.Height, GetColor(ButtonHoverBorderColor))
-		rl.DrawRectangle(b.X+int32(style[ButtonBorderWidth]), b.Y+int32(style[ButtonBorderWidth]), b.Width-(2*int32(style[ButtonBorderWidth])), b.Height-(2*int32(style[ButtonBorderWidth])), GetColor(ButtonHoverInsideColor))
-		rl.DrawText(text, b.X+((b.Width/2)-(rl.MeasureText(text, int32(style[GlobalTextFontsize]))/2)), b.Y+((b.Height/2)-(int32(style[GlobalTextFontsize])/2)), int32(style[GlobalTextFontsize]), GetColor(ButtonHoverTextColor))
+		rl.DrawRectangle(b.X, b.Y, b.Width, b.Height, style.ButtonHoverBorderColor)
+		rl.DrawRectangle(b.X+int32(style.ButtonBorderWidth), b.Y+int32(style.ButtonBorderWidth), b.Width-(2*int32(style.ButtonBorderWidth)), b.Height-(2*int32(style.ButtonBorderWidth)), style.ButtonHoverInsideColor)
+		rl.DrawText(text, b.X+((b.Width/2)-(rl.MeasureText(text, int32(style.GlobalTextFontsize))/2)), b.Y+((b.Height/2)-(int32(style.GlobalTextFontsize)/2)), int32(style.GlobalTextFontsize), style.ButtonHoverTextColor)
 		break
 
 	case Pressed:
-		rl.DrawRectangle(b.X, b.Y, b.Width, b.Height, GetColor(ButtonPressedBorderColor))
-		rl.DrawRectangle(b.X+int32(style[ButtonBorderWidth]), b.Y+int32(style[ButtonBorderWidth]), b.Width-(2*int32(style[ButtonBorderWidth])), b.Height-(2*int32(style[ButtonBorderWidth])), GetColor(ButtonPressedInsideColor))
-		rl.DrawText(text, b.X+((b.Width/2)-(rl.MeasureText(text, int32(style[GlobalTextFontsize]))/2)), b.Y+((b.Height/2)-(int32(style[GlobalTextFontsize])/2)), int32(style[GlobalTextFontsize]), GetColor(ButtonPressedTextColor))
+		rl.DrawRectangle(b.X, b.Y, b.Width, b.Height, style.ButtonPressedBorderColor)
+		rl.DrawRectangle(b.X+int32(style.ButtonBorderWidth), b.Y+int32(style.ButtonBorderWidth), b.Width-(2*int32(style.ButtonBorderWidth)), b.Height-(2*int32(style.ButtonBorderWidth)), style.ButtonPressedInsideColor)
+		rl.DrawText(text, b.X+((b.Width/2)-(rl.MeasureText(text, int32(style.GlobalTextFontsize))/2)), b.Y+((b.Height/2)-(int32(style.GlobalTextFontsize)/2)), int32(style.GlobalTextFontsize), style.ButtonPressedTextColor)
 		break
 
 	default:

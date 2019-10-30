@@ -1,289 +1,165 @@
 package rlyeh
 
 import (
-	"bufio"
-	"fmt"
+	"encoding/json"
 	"io/ioutil"
-	"strconv"
-	"strings"
+	"os"
+	"reflect"
 
 	rl "github.com/gen2brain/raylib-go/raylib"
 )
 
-// Property - GUI property
-type Property int32
-
-// GUI properties enumeration
-const (
-	GlobalBaseColor Property = iota
-	GlobalBorderColor
-	GlobalTextColor
-	GlobalTextFontsize
-	GlobalBorderHeight
-	GlobalBackgroundColor
-	GlobalLinesColor
-	GlobalPadding
-	LabelBorderWidth
-	LabelTextColor
-	LabelTextPadding
-	ButtonBorderWidth
-	ButtonTextPadding
-	ButtonDefaultBorderColor
-	ButtonDefaultInsideColor
-	ButtonDefaultTextColor
-	ButtonHoverBorderColor
-	ButtonHoverInsideColor
-	ButtonHoverTextColor
-	ButtonPressedBorderColor
-	ButtonPressedInsideColor
-	ButtonPressedTextColor
-	ProgressbarBorderColor
-	ProgressbarInsideColor
-	ProgressbarProgressColor
-	ProgressbarBorderWidth
-	ComboboxPadding
-	ComboboxWidth
-	ComboboxHeight
-	ComboboxBorderWidth
-	ComboboxDefaultBorderColor
-	ComboboxDefaultInsideColor
-	ComboboxDefaultTextColor
-	ComboboxDefaultListTextColor
-	ComboboxHoverBorderColor
-	ComboboxHoverInsideColor
-	ComboboxHoverTextColor
-	ComboboxHoverListTextColor
-	ComboboxPressedBorderColor
-	ComboboxPressedInsideColor
-	ComboboxPressedTextColor
-	ComboboxPressedListBorderColor
-	ComboboxPressedListInsideColor
-	ComboboxPressedListTextColor
-	CheckboxDefaultBorderColor
-	CheckboxDefaultInsideColor
-	CheckboxHoverBorderColor
-	CheckboxHoverInsideColor
-	CheckboxClickBorderColor
-	CheckboxClickInsideColor
-	CheckboxDefaultActiveColor
-	CheckboxInsideWidth
-	TextboxBorderWidth
-	TextboxBorderColor
-	TextboxActiveBorderColor
-	TextboxInsideColor
-	TextboxTextColor
-	TextboxLineColor
-	TextboxTextFontsize
-)
-
-// Current GUI style (default light)
-var style = []int64{
-	0xf5f5f5ff, // GLOBAL_BASE_COLOR
-	0x90abb5ff, // GLOBAL_BORDER_COLOR
-	0xf5f5f5ff, // GLOBAL_TEXT_COLOR
-	10,         // GLOBAL_TEXT_FONTSIZE
-	5,          // GLOBAL_BORDER_HEIGHT
-	0xf5f5f5ff, // GLOBAL_BACKGROUND_COLOR
-	0x90abb5ff, // GLOBAL_LINES_COLOR
-	2,          // GLOBAL_PADDING
-	1,          // LABEL_BORDER_WIDTH
-	0x4d4d4dff, // LABEL_TEXT_COLOR
-	2,          // LABEL_TEXT_PADDING
-	2,          // BUTTON_BORDER_WIDTH
-	20,         // BUTTON_TEXT_PADDING
-	0x828282ff, // BUTTON_DEFAULT_BORDER_COLOR
-	0xc8c8c8ff, // BUTTON_DEFAULT_INSIDE_COLOR
-	0x4d4d4dff, // BUTTON_DEFAULT_TEXT_COLOR
-	0xc8c8c8ff, // BUTTON_HOVER_BORDER_COLOR
-	0xffffffff, // BUTTON_HOVER_INSIDE_COLOR
-	0x868686ff, // BUTTON_HOVER_TEXT_COLOR
-	0x7bb0d6ff, // BUTTON_PRESSED_BORDER_COLOR
-	0xbcecffff, // BUTTON_PRESSED_INSIDE_COLOR
-	0x5f9aa7ff, // BUTTON_PRESSED_TEXT_COLOR
-	0x828282ff, // PROGRESSBAR_BORDER_COLOR
-	0xc8c8c8ff, // PROGRESSBAR_INSIDE_COLOR
-	0xbcecffff, // PROGRESSBAR_PROGRESS_COLOR
-	2,          // PROGRESSBAR_BORDER_WIDTH
-	2,          // COMBOBOX_PADDING
-	30,         // COMBOBOX_WIDTH
-	20,         // COMBOBOX_HEIGHT
-	1,          // COMBOBOX_BORDER_WIDTH
-	0x828282ff, // COMBOBOX_DEFAULT_BORDER_COLOR
-	0xc8c8c8ff, // COMBOBOX_DEFAULT_INSIDE_COLOR
-	0x828282ff, // COMBOBOX_DEFAULT_TEXT_COLOR
-	0x828282ff, // COMBOBOX_DEFAULT_LIST_TEXT_COLOR
-	0xc8c8c8ff, // COMBOBOX_HOVER_BORDER_COLOR
-	0xffffffff, // COMBOBOX_HOVER_INSIDE_COLOR
-	0x828282ff, // COMBOBOX_HOVER_TEXT_COLOR
-	0x828282ff, // COMBOBOX_HOVER_LIST_TEXT_COLOR
-	0x7bb0d6ff, // COMBOBOX_PRESSED_BORDER_COLOR
-	0xbcecffff, // COMBOBOX_PRESSED_INSIDE_COLOR
-	0x5f9aa7ff, // COMBOBOX_PRESSED_TEXT_COLOR
-	0x0078acff, // COMBOBOX_PRESSED_LIST_BORDER_COLOR
-	0x66e7ffff, // COMBOBOX_PRESSED_LIST_INSIDE_COLOR
-	0x0078acff, // COMBOBOX_PRESSED_LIST_TEXT_COLOR
-	0x828282ff, // CHECKBOX_DEFAULT_BORDER_COLOR
-	0xffffffff, // CHECKBOX_DEFAULT_INSIDE_COLOR
-	0xc8c8c8ff, // CHECKBOX_HOVER_BORDER_COLOR
-	0xffffffff, // CHECKBOX_HOVER_INSIDE_COLOR
-	0x66e7ffff, // CHECKBOX_CLICK_BORDER_COLOR
-	0xddf5ffff, // CHECKBOX_CLICK_INSIDE_COLOR
-	0xbcecffff, // CHECKBOX_STATUS_ACTIVE_COLOR
-	1,          // CHECKBOX_INSIDE_WIDTH
-	1,          // TEXTBOX_BORDER_WIDTH
-	0x828282ff, // TEXTBOX_BORDER_COLOR
-	0x7bb0d6ff, // TEXTBOX_ACTIVE_BORDER_COLOR
-	0xf5f5f5ff, // TEXTBOX_INSIDE_COLOR
-	0x000000ff, // TEXTBOX_TEXT_COLOR
-	0x000000ff, // TEXTBOX_LINE_COLOR
-	10,         // TEXTBOX_TEXT_FONTSIZE
+type Style struct {
+	GlobalBaseColor                rl.Color
+	GlobalBorderColor              rl.Color
+	GlobalTextColor                rl.Color
+	GlobalTextFontsize             int
+	GlobalBorderHeight             int
+	GlobalBackgroundColor          rl.Color
+	GlobalLinesColor               rl.Color
+	GlobalPadding                  int
+	LabelBorderWidth               int
+	LabelTextColor                 rl.Color
+	LabelTextPadding               int
+	ButtonBorderWidth              int
+	ButtonTextPadding              int
+	ButtonDefaultBorderColor       rl.Color
+	ButtonDefaultInsideColor       rl.Color
+	ButtonDefaultTextColor         rl.Color
+	ButtonHoverBorderColor         rl.Color
+	ButtonHoverInsideColor         rl.Color
+	ButtonHoverTextColor           rl.Color
+	ButtonPressedBorderColor       rl.Color
+	ButtonPressedInsideColor       rl.Color
+	ButtonPressedTextColor         rl.Color
+	ComboboxPadding                int
+	ComboboxWidth                  int
+	ComboboxHeight                 int
+	ComboboxBorderWidth            int
+	ComboboxDefaultBorderColor     rl.Color
+	ComboboxDefaultInsideColor     rl.Color
+	ComboboxDefaultTextColor       rl.Color
+	ComboboxDefaultListTextColor   rl.Color
+	ComboboxHoverBorderColor       rl.Color
+	ComboboxHoverInsideColor       rl.Color
+	ComboboxHoverTextColor         rl.Color
+	ComboboxHoverListTextColor     rl.Color
+	ComboboxPressedBorderColor     rl.Color
+	ComboboxPressedInsideColor     rl.Color
+	ComboboxPressedTextColor       rl.Color
+	ComboboxPressedListBorderColor rl.Color
+	ComboboxPressedListInsideColor rl.Color
+	ComboboxPressedListTextColor   rl.Color
+	CheckboxDefaultBorderColor     rl.Color
+	CheckboxDefaultInsideColor     rl.Color
+	CheckboxHoverBorderColor       rl.Color
+	CheckboxHoverInsideColor       rl.Color
+	CheckboxClickBorderColor       rl.Color
+	CheckboxClickInsideColor       rl.Color
+	CheckboxDefaultActiveColor     rl.Color
+	CheckboxInsideWidth            int
+	TextboxBorderWidth             int
+	TextboxBorderColor             rl.Color
+	TextboxActiveBorderColor       rl.Color
+	TextboxInsideColor             rl.Color
+	TextboxTextColor               rl.Color
+	TextboxLineColor               rl.Color
+	TextboxTextFontsize            int
 }
 
-// GUI property names (to read/write style text files)
-var propertyName = []string{
-	"GLOBAL_BASE_COLOR",
-	"GLOBAL_BORDER_COLOR",
-	"GLOBAL_TEXT_COLOR",
-	"GLOBAL_TEXT_FONTSIZE",
-	"GLOBAL_BORDER_HEIGHT",
-	"GLOBAL_BACKGROUND_COLOR",
-	"GLOBAL_LINES_COLOR",
-	"GLOBAL_PADDING",
-	"LABEL_BORDER_WIDTH",
-	"LABEL_TEXT_COLOR",
-	"LABEL_TEXT_PADDING",
-	"BUTTON_BORDER_WIDTH",
-	"BUTTON_TEXT_PADDING",
-	"BUTTON_DEFAULT_BORDER_COLOR",
-	"BUTTON_DEFAULT_INSIDE_COLOR",
-	"BUTTON_DEFAULT_TEXT_COLOR",
-	"BUTTON_HOVER_BORDER_COLOR",
-	"BUTTON_HOVER_INSIDE_COLOR",
-	"BUTTON_HOVER_TEXT_COLOR",
-	"BUTTON_PRESSED_BORDER_COLOR",
-	"BUTTON_PRESSED_INSIDE_COLOR",
-	"BUTTON_PRESSED_TEXT_COLOR",
-	"PROGRESSBAR_BORDER_COLOR",
-	"PROGRESSBAR_INSIDE_COLOR",
-	"PROGRESSBAR_PROGRESS_COLOR",
-	"PROGRESSBAR_BORDER_WIDTH",
-	"COMBOBOX_PADDING",
-	"COMBOBOX_WIDTH",
-	"COMBOBOX_HEIGHT",
-	"COMBOBOX_BORDER_WIDTH",
-	"COMBOBOX_DEFAULT_BORDER_COLOR",
-	"COMBOBOX_DEFAULT_INSIDE_COLOR",
-	"COMBOBOX_DEFAULT_TEXT_COLOR",
-	"COMBOBOX_DEFAULT_LIST_TEXT_COLOR",
-	"COMBOBOX_HOVER_BORDER_COLOR",
-	"COMBOBOX_HOVER_INSIDE_COLOR",
-	"COMBOBOX_HOVER_TEXT_COLOR",
-	"COMBOBOX_HOVER_LIST_TEXT_COLOR",
-	"COMBOBOX_PRESSED_BORDER_COLOR",
-	"COMBOBOX_PRESSED_INSIDE_COLOR",
-	"COMBOBOX_PRESSED_TEXT_COLOR",
-	"COMBOBOX_PRESSED_LIST_BORDER_COLOR",
-	"COMBOBOX_PRESSED_LIST_INSIDE_COLOR",
-	"COMBOBOX_PRESSED_LIST_TEXT_COLOR",
-	"CHECKBOX_DEFAULT_BORDER_COLOR",
-	"CHECKBOX_DEFAULT_INSIDE_COLOR",
-	"CHECKBOX_HOVER_BORDER_COLOR",
-	"CHECKBOX_HOVER_INSIDE_COLOR",
-	"CHECKBOX_CLICK_BORDER_COLOR",
-	"CHECKBOX_CLICK_INSIDE_COLOR",
-	"CHECKBOX_STATUS_ACTIVE_COLOR",
-	"CHECKBOX_INSIDE_WIDTH",
-	"TEXTBOX_BORDER_WIDTH",
-	"TEXTBOX_BORDER_COLOR",
-	"TEXTBOX_ACTIVE_BORDER_COLOR",
-	"TEXTBOX_INSIDE_COLOR",
-	"TEXTBOX_TEXT_COLOR",
-	"TEXTBOX_LINE_COLOR",
-	"TEXTBOX_TEXT_FONTSIZE",
+func NewStyle() *Style {
+	style := &Style{}
+
+	style.GlobalBaseColor = rl.NewColor(0xf5, 0xf5, 0xf5, 0xff)
+	style.GlobalBorderColor = rl.NewColor(0x90, 0xab, 0xb5, 0xff)
+	style.GlobalTextColor = rl.NewColor(0xf5, 0xf5, 0xf5, 0xff)
+	style.GlobalTextFontsize = 10
+	style.GlobalBorderHeight = 5
+	style.GlobalBackgroundColor = rl.NewColor(0xf5, 0xf5, 0xf5, 0xff)
+	style.GlobalLinesColor = rl.NewColor(0x90, 0xab, 0xb5, 0xff)
+	style.GlobalPadding = 2
+	style.LabelBorderWidth = 1
+	style.LabelTextColor = rl.NewColor(0x4d, 0x4d, 0x4d, 0xff)
+	style.LabelTextPadding = 2
+	style.ButtonBorderWidth = 2
+	style.ButtonTextPadding = 20
+	style.ButtonDefaultBorderColor = rl.NewColor(0x82, 0x82, 0x82, 0xff)
+	style.ButtonDefaultInsideColor = rl.NewColor(0xc8, 0xc8, 0xc8, 0xff)
+	style.ButtonDefaultTextColor = rl.NewColor(0x4d, 0x4d, 0x4d, 0xff)
+	style.ButtonHoverBorderColor = rl.NewColor(0xc8, 0xc8, 0xc8, 0xff)
+	style.ButtonHoverInsideColor = rl.NewColor(0xff, 0xff, 0xff, 0xff)
+	style.ButtonHoverTextColor = rl.NewColor(0x86, 0x86, 0x86, 0xff)
+	style.ButtonPressedBorderColor = rl.NewColor(0x7b, 0xb0, 0xd6, 0xff)
+	style.ButtonPressedInsideColor = rl.NewColor(0xbc, 0xec, 0xff, 0xff)
+	style.ButtonPressedTextColor = rl.NewColor(0x5f, 0x9a, 0xa7, 0xff)
+	style.ComboboxPadding = 2
+	style.ComboboxWidth = 30
+	style.ComboboxHeight = 20
+	style.ComboboxBorderWidth = 1
+	style.ComboboxDefaultBorderColor = rl.NewColor(0x82, 0x82, 0x82, 0xff)
+	style.ComboboxDefaultInsideColor = rl.NewColor(0xc8, 0xc8, 0xc8, 0xff)
+	style.ComboboxDefaultTextColor = rl.NewColor(0x82, 0x82, 0x82, 0xff)
+	style.ComboboxDefaultListTextColor = rl.NewColor(0x82, 0x82, 0x82, 0xff)
+	style.ComboboxHoverBorderColor = rl.NewColor(0xc8, 0xc8, 0xc8, 0xff)
+	style.ComboboxHoverInsideColor = rl.NewColor(0xff, 0xff, 0xff, 0xff)
+	style.ComboboxHoverTextColor = rl.NewColor(0x82, 0x82, 0x82, 0xff)
+	style.ComboboxHoverListTextColor = rl.NewColor(0x82, 0x82, 0x82, 0xff)
+	style.ComboboxPressedBorderColor = rl.NewColor(0x7b, 0xb0, 0xd6, 0xff)
+	style.ComboboxPressedInsideColor = rl.NewColor(0xbc, 0xec, 0xff, 0xff)
+	style.ComboboxPressedTextColor = rl.NewColor(0x5f, 0x9a, 0xa7, 0xff)
+	style.ComboboxPressedListBorderColor = rl.NewColor(0x00, 0x78, 0xac, 0xff)
+	style.ComboboxPressedListInsideColor = rl.NewColor(0x66, 0xe7, 0xff, 0xff)
+	style.ComboboxPressedListTextColor = rl.NewColor(0x00, 0x78, 0xac, 0xff)
+	style.CheckboxDefaultBorderColor = rl.NewColor(0x82, 0x82, 0x82, 0xff)
+	style.CheckboxDefaultInsideColor = rl.NewColor(0xff, 0xff, 0xff, 0xff)
+	style.CheckboxHoverBorderColor = rl.NewColor(0xc8, 0xc8, 0xc8, 0xff)
+	style.CheckboxHoverInsideColor = rl.NewColor(0xff, 0xff, 0xff, 0xff)
+	style.CheckboxClickBorderColor = rl.NewColor(0x66, 0xe7, 0xff, 0xff)
+	style.CheckboxClickInsideColor = rl.NewColor(0xdd, 0xf5, 0xff, 0xff)
+	style.CheckboxInsideWidth = 1
+	style.TextboxBorderWidth = 1
+	style.TextboxBorderColor = rl.NewColor(0x82, 0x82, 0x82, 0xff)
+	style.TextboxActiveBorderColor = rl.NewColor(0x7b, 0xb0, 0xd6, 0xff)
+	style.TextboxInsideColor = rl.NewColor(0xf5, 0xf5, 0xf5, 0xff)
+	style.TextboxTextColor = rl.NewColor(0x00, 0x00, 0x00, 0xff)
+	style.TextboxLineColor = rl.NewColor(0x00, 0x00, 0x00, 0xff)
+	style.TextboxTextFontsize = 10
+
+	return style
 }
 
-func GetColor(color Property) rl.Color {
-	return rl.GetColor(int32(style[color]))
+func (self *Style) Save(filename string) {
+	bytes, _ := json.MarshalIndent(*self, "", " ")
+
+	_ = ioutil.WriteFile(filename, bytes, 0644)
 }
 
-// BackgroundColor - Get background color
-func BackgroundColor() rl.Color {
-	return GetColor(GlobalBackgroundColor)
-}
-
-// LinesColor - Get lines color
-func LinesColor() rl.Color {
-	return GetColor(GlobalLinesColor)
-}
-
-// TextColor - Get text color for normal state
-func TextColor() rl.Color {
-	return GetColor(GlobalTextColor)
-}
-
-func SaveStyle(filename string) {
-	var styleFile string
-	for i := 0; i < len(propertyName); i++ {
-		styleFile += fmt.Sprintf("%-40s0x%x\n", propertyName[i], GetStyleProperty(Property(i)))
-	}
-
-	ioutil.WriteFile(filename, []byte(styleFile), 0644)
-}
-
-func LoadStyle(filename string) {
-	LoadStyleScaled(filename, 1)
-}
-
-func LoadStyleScaled(filename string, scale float32) {
-	file, err := rl.OpenAsset(filename)
-	if err != nil {
-		rl.TraceLog(rl.LogWarning, "[%s] GUI style file could not be opened", filename)
+func (self *Style) Load(filename string) {
+	jsonFile, err := os.Open(filename)
+	if nil != err {
 		return
 	}
-	defer file.Close()
 
-	var lines []string
-	scanner := bufio.NewScanner(file)
-	for scanner.Scan() {
-		lines = append(lines, scanner.Text())
-	}
+	bytes, _ := ioutil.ReadAll(jsonFile)
 
-	for _, line := range lines {
-		fields := strings.Fields(line)
-		if len(fields) != 2 {
-			continue
+	json.Unmarshal(bytes, self)
+}
+
+func (self *Style) LoadScaled(filename string, scale float32) {
+	self.Load(filename)
+
+	value := reflect.ValueOf(self).Elem()
+
+	for i := 0; i < value.NumField(); i++ {
+		field := value.Field(i)
+		x, ok := field.Interface().(int)
+		x = int(float32(x) * scale)
+
+		if ok {
+			field.SetInt(int64(x))
 		}
 
-		id := fields[0]
-		value := fields[1]
-
-		for i := 0; i < len(propertyName); i++ {
-			if id == propertyName[i] {
-				if strings.HasPrefix(value, "0x") {
-					value = value[2:]
-				}
-
-				v, err := strconv.ParseInt(value, 16, 64)
-
-				if strings.Contains(id, "WIDTH") || strings.Contains(id, "HEIGHT") ||
-					strings.Contains(id, "PADDING") || strings.Contains(id, "SIZE") {
-					v = int64(float32(v) * scale)
-				}
-
-				if err == nil {
-					style[i] = v
-				}
-			}
-		}
 	}
 }
 
-// SetStyleProperty - Set one style property
-func SetStyleProperty(guiProperty Property, value int64) {
-	style[guiProperty] = value
-}
-
-// GetStyleProperty - Get one style property
-func GetStyleProperty(guiProperty Property) int64 {
-	return style[int(guiProperty)]
-}
+var style = NewStyle()

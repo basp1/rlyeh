@@ -88,7 +88,7 @@ func (self *HBox) GetDataSize() Size {
 		}
 	}
 
-	size.Width += float32(int(style[GlobalPadding]) * (1 + len(self.Widgets)))
+	size.Width += float32(int(style.GlobalPadding) * (1 + len(self.Widgets)))
 
 	return size
 }
@@ -101,7 +101,7 @@ func (self *HBox) Update(dt float32) {
 }
 
 func (self *HBox) Draw() {
-	x := self.Bounds.X + float32(style[GlobalPadding])
+	x := self.Bounds.X + float32(style.GlobalPadding)
 	bounds := self.Bounds
 
 	fillers := 0
@@ -151,7 +151,7 @@ func (self *HBox) Draw() {
 
 		widget.Draw()
 
-		x += newBounds.Width + float32(style[GlobalPadding])
+		x += newBounds.Width + float32(style.GlobalPadding)
 	}
 }
 

@@ -73,11 +73,11 @@ func (self *Textbox) GetFill() Fill {
 func (self *Textbox) GetDataSize() Size {
 	var size Size
 
-	size.Width = float32(self.runeCount) * float32(rl.MeasureText("A", int32(style[GlobalTextFontsize])))
-	size.Height = float32(style[GlobalTextFontsize])
+	size.Width = float32(self.runeCount) * float32(rl.MeasureText("A", int32(style.GlobalTextFontsize)))
+	size.Height = float32(style.GlobalTextFontsize)
 
-	size.Width += float32(style[LabelTextPadding])
-	size.Height += float32(style[LabelTextPadding]) / 2
+	size.Width += float32(style.LabelTextPadding)
+	size.Height += float32(style.LabelTextPadding) / 2
 
 	return size
 }
@@ -127,41 +127,41 @@ func (self *Textbox) Draw() {
 	bounds := self.Bounds
 
 	boundsInside := bounds
-	boundsInside.X += float32(style[TextboxBorderWidth])
-	boundsInside.Y += float32(style[TextboxBorderWidth])
-	boundsInside.Width -= float32(style[TextboxBorderWidth]) * 2
-	boundsInside.Height -= float32(style[TextboxBorderWidth]) * 2
+	boundsInside.X += float32(style.TextboxBorderWidth)
+	boundsInside.Y += float32(style.TextboxBorderWidth)
+	boundsInside.Width -= float32(style.TextboxBorderWidth) * 2
+	boundsInside.Height -= float32(style.TextboxBorderWidth) * 2
 
 	textPointX := int32(bounds.X) + 2
-	textPointY := int32(bounds.Y) + int32(style[TextboxBorderWidth]) + int32(bounds.Height/2) - int32(style[TextboxTextFontsize])/2
+	textPointY := int32(bounds.Y) + int32(style.TextboxBorderWidth) + int32(bounds.Height/2) - int32(style.TextboxTextFontsize)/2
 
-	runeWidth := float32(rl.MeasureText("A", int32(style[GlobalTextFontsize])))
+	runeWidth := float32(rl.MeasureText("A", int32(style.GlobalTextFontsize)))
 	runeCount := len(self.text)
 	truncated := self.text[runeCount-int(min(float32(runeCount), boundsInside.Width/runeWidth)):]
 
 	switch self.state {
 	case Normal:
-		rl.DrawRectangleRec(bounds, GetColor(TextboxBorderColor))
-		rl.DrawRectangleRec(boundsInside, GetColor(TextboxInsideColor))
-		rl.DrawText(truncated, textPointX, textPointY, int32(style[TextboxTextFontsize]), GetColor(TextboxTextColor))
+		rl.DrawRectangleRec(bounds, style.TextboxBorderColor)
+		rl.DrawRectangleRec(boundsInside, style.TextboxInsideColor)
+		rl.DrawText(truncated, textPointX, textPointY, int32(style.TextboxTextFontsize), style.TextboxTextColor)
 		break
 
 	case Focused:
-		rl.DrawRectangleRec(bounds, GetColor(TextboxActiveBorderColor))
-		rl.DrawRectangleRec(boundsInside, GetColor(TextboxInsideColor))
-		rl.DrawText(truncated, textPointX, textPointY, int32(style[TextboxTextFontsize]), GetColor(TextboxTextColor))
+		rl.DrawRectangleRec(bounds, style.TextboxActiveBorderColor)
+		rl.DrawRectangleRec(boundsInside, style.TextboxInsideColor)
+		rl.DrawText(truncated, textPointX, textPointY, int32(style.TextboxTextFontsize), style.TextboxTextColor)
 		break
 
 	case Pressed:
-		rl.DrawRectangleRec(bounds, GetColor(TextboxActiveBorderColor))
-		rl.DrawRectangleRec(boundsInside, GetColor(TextboxInsideColor))
-		rl.DrawText(truncated, textPointX, textPointY, int32(style[TextboxTextFontsize]), GetColor(TextboxTextColor))
+		rl.DrawRectangleRec(bounds, style.TextboxActiveBorderColor)
+		rl.DrawRectangleRec(boundsInside, style.TextboxInsideColor)
+		rl.DrawText(truncated, textPointX, textPointY, int32(style.TextboxTextFontsize), style.TextboxTextColor)
 
 		if (self.framesCounter/20)%2 == 0 {
-			rl.DrawRectangle(int32(bounds.X)+4+rl.MeasureText(truncated, int32(style[GlobalTextFontsize])),
+			rl.DrawRectangle(int32(bounds.X)+4+rl.MeasureText(truncated, int32(style.GlobalTextFontsize)),
 				int32(bounds.Y+2),
 				1,
-				int32(bounds.Height-4), GetColor(TextboxLineColor))
+				int32(bounds.Height-4), style.TextboxLineColor)
 		}
 		break
 	default:

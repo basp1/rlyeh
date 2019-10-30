@@ -65,7 +65,7 @@ func (self *Checkbox) GetFill() Fill {
 func (self *Checkbox) GetDataSize() Size {
 	var size Size
 
-	size.Width = float32(style[LabelBorderWidth]) + float32(style[GlobalTextFontsize])
+	size.Width = float32(style.LabelBorderWidth) + float32(style.GlobalTextFontsize)
 	size.Height = size.Width
 
 	return size
@@ -81,26 +81,26 @@ func (self *Checkbox) Update(dt float32) {
 
 func (self *Checkbox) Draw() {
 	b := self.Bounds.ToInt32()
-	borderWidth := int32(style[LabelBorderWidth])
+	borderWidth := int32(style.LabelBorderWidth)
 
 	switch self.state {
 	case Normal:
-		rl.DrawRectangle(b.X, b.Y, b.Width, b.Height, GetColor(CheckboxDefaultBorderColor))
-		rl.DrawRectangle(b.X+borderWidth, b.Y+borderWidth, b.Width-(2*borderWidth), b.Height-(2*borderWidth), GetColor(CheckboxDefaultInsideColor))
+		rl.DrawRectangle(b.X, b.Y, b.Width, b.Height, style.CheckboxDefaultBorderColor)
+		rl.DrawRectangle(b.X+borderWidth, b.Y+borderWidth, b.Width-(2*borderWidth), b.Height-(2*borderWidth), style.CheckboxDefaultInsideColor)
 		break
 	case Focused:
-		rl.DrawRectangle(b.X, b.Y, b.Width, b.Height, GetColor(CheckboxHoverBorderColor))
-		rl.DrawRectangle(b.X+borderWidth, b.Y+borderWidth, b.Width-(2*borderWidth), b.Height-(2*borderWidth), GetColor(CheckboxHoverInsideColor))
+		rl.DrawRectangle(b.X, b.Y, b.Width, b.Height, style.CheckboxHoverBorderColor)
+		rl.DrawRectangle(b.X+borderWidth, b.Y+borderWidth, b.Width-(2*borderWidth), b.Height-(2*borderWidth), style.CheckboxHoverInsideColor)
 		break
 	case Pressed:
-		rl.DrawRectangle(b.X, b.Y, b.Width, b.Height, GetColor(CheckboxClickBorderColor))
-		rl.DrawRectangle(b.X+borderWidth, b.Y+borderWidth, b.Width-(2*borderWidth), b.Height-(2*borderWidth), GetColor(CheckboxClickInsideColor))
+		rl.DrawRectangle(b.X, b.Y, b.Width, b.Height, style.CheckboxClickBorderColor)
+		rl.DrawRectangle(b.X+borderWidth, b.Y+borderWidth, b.Width-(2*borderWidth), b.Height-(2*borderWidth), style.CheckboxClickInsideColor)
 		break
 	default:
 		break
 	}
 
 	if self.Checked {
-		rl.DrawRectangle(b.X+int32(style[CheckboxInsideWidth]), b.Y+int32(style[CheckboxInsideWidth]), b.Width-(2*int32(style[CheckboxInsideWidth])), b.Height-(2*int32(style[CheckboxInsideWidth])), rl.GetColor(int32(style[CheckboxDefaultActiveColor])))
+		rl.DrawRectangle(b.X+int32(style.CheckboxInsideWidth), b.Y+int32(style.CheckboxInsideWidth), b.Width-(2*int32(style.CheckboxInsideWidth)), b.Height-(2*int32(style.CheckboxInsideWidth)), style.CheckboxDefaultActiveColor)
 	}
 }

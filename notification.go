@@ -30,8 +30,8 @@ func Notify(seconds float32, format string, params ...interface{}) {
 
 	text := fmt.Sprintf(format, params...)
 
-	fontSize := int32(style[GlobalTextFontsize])
-	color := GetColor(LabelTextColor)
+	fontSize := int32(style.GlobalTextFontsize)
+	color := style.LabelTextColor
 	point := rl.Vector2{X: float32(app.Width) - float32(rl.MeasureText(text, fontSize)),
 		Y: float32(app.Height) - float32(1+len(notifications))*float32(fontSize)}
 

@@ -5,7 +5,7 @@ import (
 )
 
 func OkCancel(text string, onOk func()) *Dialog {
-	fontsize := int32(style[GlobalTextFontsize])
+	fontsize := int32(style.GlobalTextFontsize)
 	width := float32(rl.MeasureText(text, fontsize))
 
 	dialog := NewDialog(rl.NewRectangle(2*width, float32(5*fontsize), 0, 0))

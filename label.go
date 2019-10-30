@@ -61,11 +61,11 @@ func (self *Label) GetFill() Fill {
 func (self *Label) GetDataSize() Size {
 	var size Size
 
-	size.Width = float32(rl.MeasureText(self.Text, int32(style[GlobalTextFontsize])))
-	size.Height = float32(style[GlobalTextFontsize])
+	size.Width = float32(rl.MeasureText(self.Text, int32(style.GlobalTextFontsize)))
+	size.Height = float32(style.GlobalTextFontsize)
 
-	size.Width += float32(style[LabelTextPadding])
-	size.Height += float32(style[LabelTextPadding]) / 2
+	size.Width += float32(style.LabelTextPadding)
+	size.Height += float32(style.LabelTextPadding) / 2
 
 	return size
 }
@@ -74,14 +74,14 @@ func (self *Label) Update(dt float32) {
 }
 
 func (self *Label) Draw() {
-	textColor := GetColor(LabelTextColor)
+	textColor := style.LabelTextColor
 	border := rl.NewColor(0, 0, 0, 0)
 	inner := rl.NewColor(0, 0, 0, 0)
 
 	b := self.Bounds.ToInt32()
-	textWidth := rl.MeasureText(self.Text, int32(style[GlobalTextFontsize]))
+	textWidth := rl.MeasureText(self.Text, int32(style.GlobalTextFontsize))
 
 	rl.DrawRectangleRec(self.Bounds, border)
-	rl.DrawRectangle(b.X+int32(style[LabelBorderWidth]), b.Y+int32(style[LabelBorderWidth]), b.Width-(2*int32(style[LabelBorderWidth])), b.Height-(2*int32(style[LabelBorderWidth])), inner)
-	rl.DrawText(self.Text, b.X+((b.Width/2)-(textWidth/2)), b.Y+((b.Height/2)-(int32(style[GlobalTextFontsize])/2)), int32(style[GlobalTextFontsize]), textColor)
+	rl.DrawRectangle(b.X+int32(style.LabelBorderWidth), b.Y+int32(style.LabelBorderWidth), b.Width-(2*int32(style.LabelBorderWidth)), b.Height-(2*int32(style.LabelBorderWidth)), inner)
+	rl.DrawText(self.Text, b.X+((b.Width/2)-(textWidth/2)), b.Y+((b.Height/2)-(int32(style.GlobalTextFontsize)/2)), int32(style.GlobalTextFontsize), textColor)
 }

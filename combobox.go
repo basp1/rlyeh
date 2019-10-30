@@ -1,8 +1,6 @@
 package rlyeh
 
 import (
-	"fmt"
-
 	rl "github.com/gen2brain/raylib-go/raylib"
 )
 
@@ -17,6 +15,9 @@ type Combobox struct {
 	strings []string
 	active  int
 	longest float32
+
+	state    State
+	unrolled bool
 }
 
 func NewCombobox(align Align, fill Fill, strings []string) *Combobox {
@@ -28,6 +29,8 @@ func NewCombobox(align Align, fill Fill, strings []string) *Combobox {
 	self.strings = strings
 
 	self.active = 0
+	self.state = Normal
+	self.unrolled = false
 
 	max := 0
 	for i, str := range strings {
@@ -35,7 +38,8 @@ func NewCombobox(align Align, fill Fill, strings []string) *Combobox {
 			max = i
 		}
 	}
-	self.longest = float32(rl.MeasureText("  "+self.strings[max], int32(style[GlobalTextFontsize])))
+
+	self.longest = float32(rl.MeasureText("  "+self.strings[max], int32(style.GlobalTextFontsize)))
 
 	return self
 }
@@ -76,13 +80,15 @@ func (self *Combobox) GetDataSize() Size {
 	var size Size
 
 	size.Width = self.longest
-	size.Height = float32(style[GlobalTextFontsize])
+	size.Width += float32(style.ComboboxWidth)
+	size.Width += float32(style.ComboboxPadding)
 
-	size.Width += float32(style[ComboboxWidth])
-	size.Height += float32(style[ComboboxHeight])
-
-	size.Width += float32(style[ComboboxPadding])
-	size.Height += float32(style[ComboboxPadding]) / 2
+	if style.GlobalTextFontsize < style.ComboboxHeight {
+		size.Height = float32(style.ComboboxHeight)
+	} else {
+		size.Height = float32(style.GlobalTextFontsize)
+	}
+	size.Height += float32(style.ComboboxPadding) / 2
 
 	return size
 }
@@ -92,89 +98,68 @@ func (self *Combobox) GetActive() int {
 }
 
 func (self *Combobox) Update(dt float32) {
+	bounds := self.Bounds
+
+	state := GetState(bounds)
+
+	if !self.unrolled && Pressed != self.state && Pressed == state {
+		self.unrolled = true
+	}
+	if self.unrolled && Pressed != self.state && Normal == state {
+		self.unrolled = false
+	}
+
+	self.state = state
 }
 
 func (self *Combobox) Draw() {
-	bounds := self.Bounds
-	bounds.Width -= float32(style[ComboboxWidth])
-	bounds.Height -= float32(style[ComboboxHeight])
-	bounds.Width -= float32(style[ComboboxPadding])
-	bounds.Height -= float32(style[ComboboxPadding]) / 2
+	b := self.Bounds.ToInt32()
 
-	b := bounds.ToInt32()
-	state := Normal
-
-	clicked := false
-	click := rl.NewRectangle(bounds.X+bounds.Width+float32(style[ComboboxPadding]), bounds.Y, float32(style[ComboboxWidth]), float32(style[ComboboxHeight]))
-	c := click.ToInt32()
-
-	mousePoint := rl.GetMousePosition()
-
-	itemCount := len(self.strings)
-	for i := 0; i < itemCount; i++ {
-		if i != self.active {
-			continue
-		}
-
-		if rl.CheckCollisionPointRec(mousePoint, bounds) || rl.CheckCollisionPointRec(mousePoint, click) {
-			if rl.IsMouseButtonDown(rl.MouseLeftButton) {
-				state = Pressed
-			} else if rl.IsMouseButtonReleased(rl.MouseLeftButton) || rl.IsMouseButtonPressed(rl.MouseLeftButton) {
-				clicked = true
-			} else {
-				state = Focused
-			}
-		}
-
-		switch state {
+	if !self.unrolled {
+		switch self.state {
 		case Normal:
-			rl.DrawRectangle(b.X, b.Y, b.Width, b.Height, GetColor(ComboboxDefaultBorderColor))
-			rl.DrawRectangle(b.X+int32(style[ComboboxBorderWidth]), b.Y+int32(style[ComboboxBorderWidth]), b.Width-(2*int32(style[ComboboxBorderWidth])), b.Height-(2*int32(style[ComboboxBorderWidth])), GetColor(ComboboxDefaultInsideColor))
-
-			rl.DrawRectangle(c.X, c.Y, c.Width, c.Height, GetColor(ComboboxDefaultBorderColor))
-			rl.DrawRectangle(c.X+int32(style[ComboboxBorderWidth]), c.Y+int32(style[ComboboxBorderWidth]), c.Width-(2*int32(style[ComboboxBorderWidth])), c.Height-(2*int32(style[ComboboxBorderWidth])), GetColor(ComboboxDefaultInsideColor))
-			rl.DrawText(fmt.Sprintf("%d/%d", self.active+1, itemCount), c.X+((c.Width/2)-(rl.MeasureText(fmt.Sprintf("%d/%d", self.active+1, itemCount), int32(style[GlobalTextFontsize]))/2)), c.Y+((c.Height/2)-(int32(style[GlobalTextFontsize])/2)), int32(style[GlobalTextFontsize]), GetColor(ComboboxDefaultListTextColor))
-			rl.DrawText(self.strings[i], b.X+((b.Width/2)-(rl.MeasureText(self.strings[i], int32(style[GlobalTextFontsize]))/2)), b.Y+((b.Height/2)-(int32(style[GlobalTextFontsize])/2)), int32(style[GlobalTextFontsize]), GetColor(ComboboxDefaultTextColor))
+			rl.DrawRectangle(b.X, b.Y, b.Width, b.Height, style.ComboboxDefaultBorderColor)
+			rl.DrawRectangle(b.X+int32(style.ComboboxBorderWidth), b.Y+int32(style.ComboboxBorderWidth), b.Width-(2*int32(style.ComboboxBorderWidth)), b.Height-(2*int32(style.ComboboxBorderWidth)), style.ComboboxDefaultInsideColor)
+			rl.DrawText(self.strings[self.active], b.X+((b.Width/2)-(rl.MeasureText(self.strings[self.active], int32(style.GlobalTextFontsize))/2)), b.Y+((b.Height/2)-(int32(style.GlobalTextFontsize)/2)), int32(style.GlobalTextFontsize), style.ComboboxDefaultTextColor)
 			break
 		case Focused:
-			rl.DrawRectangle(b.X, b.Y, b.Width, b.Height, GetColor(ComboboxHoverBorderColor))
-			rl.DrawRectangle(b.X+int32(style[ComboboxBorderWidth]), b.Y+int32(style[ComboboxBorderWidth]), b.Width-(2*int32(style[ComboboxBorderWidth])), b.Height-(2*int32(style[ComboboxBorderWidth])), GetColor(ComboboxHoverInsideColor))
-
-			rl.DrawRectangle(c.X, c.Y, c.Width, c.Height, GetColor(ComboboxHoverBorderColor))
-			rl.DrawRectangle(c.X+int32(style[ComboboxBorderWidth]), c.Y+int32(style[ComboboxBorderWidth]), c.Width-(2*int32(style[ComboboxBorderWidth])), c.Height-(2*int32(style[ComboboxBorderWidth])), GetColor(ComboboxHoverInsideColor))
-			rl.DrawText(fmt.Sprintf("%d/%d", self.active+1, itemCount), c.X+((c.Width/2)-(rl.MeasureText(fmt.Sprintf("%d/%d", self.active+1, itemCount), int32(style[GlobalTextFontsize]))/2)), c.Y+((c.Height/2)-(int32(style[GlobalTextFontsize])/2)), int32(style[GlobalTextFontsize]), GetColor(ComboboxHoverListTextColor))
-			rl.DrawText(self.strings[i], b.X+((b.Width/2)-(rl.MeasureText(self.strings[i], int32(style[GlobalTextFontsize]))/2)), b.Y+((b.Height/2)-(int32(style[GlobalTextFontsize])/2)), int32(style[GlobalTextFontsize]), GetColor(ComboboxHoverTextColor))
+			rl.DrawRectangle(b.X, b.Y, b.Width, b.Height, style.ComboboxHoverBorderColor)
+			rl.DrawRectangle(b.X+int32(style.ComboboxBorderWidth), b.Y+int32(style.ComboboxBorderWidth), b.Width-(2*int32(style.ComboboxBorderWidth)), b.Height-(2*int32(style.ComboboxBorderWidth)), style.ComboboxHoverInsideColor)
+			rl.DrawText(self.strings[self.active], b.X+((b.Width/2)-(rl.MeasureText(self.strings[self.active], int32(style.GlobalTextFontsize))/2)), b.Y+((b.Height/2)-(int32(style.GlobalTextFontsize)/2)), int32(style.GlobalTextFontsize), style.ComboboxHoverTextColor)
 			break
 		case Pressed:
-			rl.DrawRectangle(b.X, b.Y, b.Width, b.Height, GetColor(ComboboxPressedBorderColor))
-			rl.DrawRectangle(b.X+int32(style[ComboboxBorderWidth]), b.Y+int32(style[ComboboxBorderWidth]), b.Width-(2*int32(style[ComboboxBorderWidth])), b.Height-(2*int32(style[ComboboxBorderWidth])), GetColor(ComboboxPressedInsideColor))
-
-			rl.DrawRectangle(c.X, c.Y, c.Width, c.Height, GetColor(ComboboxPressedListBorderColor))
-			rl.DrawRectangle(c.X+int32(style[ComboboxBorderWidth]), c.Y+int32(style[ComboboxBorderWidth]), c.Width-(2*int32(style[ComboboxBorderWidth])), c.Height-(2*int32(style[ComboboxBorderWidth])), GetColor(ComboboxPressedListInsideColor))
-			rl.DrawText(fmt.Sprintf("%d/%d", self.active+1, itemCount), c.X+((c.Width/2)-(rl.MeasureText(fmt.Sprintf("%d/%d", self.active+1, itemCount), int32(style[GlobalTextFontsize]))/2)), c.Y+((c.Height/2)-(int32(style[GlobalTextFontsize])/2)), int32(style[GlobalTextFontsize]), GetColor(ComboboxPressedListTextColor))
-			rl.DrawText(self.strings[i], b.X+((b.Width/2)-(rl.MeasureText(self.strings[i], int32(style[GlobalTextFontsize]))/2)), b.Y+((b.Height/2)-(int32(style[GlobalTextFontsize])/2)), int32(style[GlobalTextFontsize]), GetColor(ComboboxPressedTextColor))
+			rl.DrawRectangle(b.X, b.Y, b.Width, b.Height, style.ComboboxPressedBorderColor)
+			rl.DrawRectangle(b.X+int32(style.ComboboxBorderWidth), b.Y+int32(style.ComboboxBorderWidth), b.Width-(2*int32(style.ComboboxBorderWidth)), b.Height-(2*int32(style.ComboboxBorderWidth)), style.ComboboxPressedInsideColor)
+			rl.DrawText(self.strings[self.active], b.X+((b.Width/2)-(rl.MeasureText(self.strings[self.active], int32(style.GlobalTextFontsize))/2)), b.Y+((b.Height/2)-(int32(style.GlobalTextFontsize)/2)), int32(style.GlobalTextFontsize), style.ComboboxPressedTextColor)
 			break
 		default:
 			break
 		}
+	} else {
+		itemCount := len(self.strings)
 
-		if clicked {
-			rl.DrawRectangle(b.X, b.Y, b.Width, b.Height, GetColor(ComboboxPressedBorderColor))
-			rl.DrawRectangle(b.X+int32(style[ComboboxBorderWidth]), b.Y+int32(style[ComboboxBorderWidth]), b.Width-(2*int32(style[ComboboxBorderWidth])), b.Height-(2*int32(style[ComboboxBorderWidth])), GetColor(ComboboxPressedInsideColor))
-
-			rl.DrawRectangle(c.X, c.Y, c.Width, c.Height, GetColor(ComboboxPressedListBorderColor))
-			rl.DrawRectangle(c.X+int32(style[ComboboxBorderWidth]), c.Y+int32(style[ComboboxBorderWidth]), c.Width-(2*int32(style[ComboboxBorderWidth])), c.Height-(2*int32(style[ComboboxBorderWidth])), GetColor(ComboboxPressedListInsideColor))
-			rl.DrawText(fmt.Sprintf("%d/%d", self.active+1, itemCount), c.X+((c.Width/2)-(rl.MeasureText(fmt.Sprintf("%d/%d", self.active+1, itemCount), int32(style[GlobalTextFontsize]))/2)), c.Y+((c.Height/2)-(int32(style[GlobalTextFontsize])/2)), int32(style[GlobalTextFontsize]), GetColor(ComboboxPressedListTextColor))
-			rl.DrawText(self.strings[i], b.X+((b.Width/2)-(rl.MeasureText(self.strings[i], int32(style[GlobalTextFontsize]))/2)), b.Y+((b.Height/2)-(int32(style[GlobalTextFontsize])/2)), int32(style[GlobalTextFontsize]), GetColor(ComboboxPressedTextColor))
-		}
-	}
-
-	if rl.CheckCollisionPointRec(mousePoint, bounds) || rl.CheckCollisionPointRec(mousePoint, click) {
-		if rl.IsMouseButtonPressed(rl.MouseLeftButton) {
-			self.active++
-			if self.active >= itemCount {
-				self.active = 0
+		for i := 0; i < itemCount; i++ {
+			switch self.state {
+			case Normal:
+				rl.DrawRectangle(b.X, b.Y, b.Width, b.Height, style.ComboboxDefaultBorderColor)
+				rl.DrawRectangle(b.X+int32(style.ComboboxBorderWidth), b.Y+int32(style.ComboboxBorderWidth), b.Width-(2*int32(style.ComboboxBorderWidth)), b.Height-(2*int32(style.ComboboxBorderWidth)), style.ComboboxDefaultInsideColor)
+				rl.DrawText(self.strings[i], b.X+((b.Width/2)-(rl.MeasureText(self.strings[i], int32(style.GlobalTextFontsize))/2)), b.Y+((b.Height/2)-(int32(style.GlobalTextFontsize)/2)), int32(style.GlobalTextFontsize), style.ComboboxDefaultTextColor)
+				break
+			case Focused:
+				rl.DrawRectangle(b.X, b.Y, b.Width, b.Height, style.ComboboxHoverBorderColor)
+				rl.DrawRectangle(b.X+int32(style.ComboboxBorderWidth), b.Y+int32(style.ComboboxBorderWidth), b.Width-(2*int32(style.ComboboxBorderWidth)), b.Height-(2*int32(style.ComboboxBorderWidth)), style.ComboboxHoverInsideColor)
+				rl.DrawText(self.strings[i], b.X+((b.Width/2)-(rl.MeasureText(self.strings[i], int32(style.GlobalTextFontsize))/2)), b.Y+((b.Height/2)-(int32(style.GlobalTextFontsize)/2)), int32(style.GlobalTextFontsize), style.ComboboxHoverTextColor)
+				break
+			case Pressed:
+				rl.DrawRectangle(b.X, b.Y, b.Width, b.Height, style.ComboboxPressedBorderColor)
+				rl.DrawRectangle(b.X+int32(style.ComboboxBorderWidth), b.Y+int32(style.ComboboxBorderWidth), b.Width-(2*int32(style.ComboboxBorderWidth)), b.Height-(2*int32(style.ComboboxBorderWidth)), style.ComboboxPressedInsideColor)
+				rl.DrawText(self.strings[i], b.X+((b.Width/2)-(rl.MeasureText(self.strings[i], int32(style.GlobalTextFontsize))/2)), b.Y+((b.Height/2)-(int32(style.GlobalTextFontsize)/2)), int32(style.GlobalTextFontsize), style.ComboboxPressedTextColor)
+				break
+			default:
+				break
 			}
+
+			b.Y -= b.Height
 		}
 	}
 }
