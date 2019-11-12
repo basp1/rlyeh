@@ -13,7 +13,7 @@ type Animation struct {
 	frameCount byte
 }
 
-func New(texture rl.Texture2D, point rl.Vector2, size Size, frameCount byte) *Animation {
+func NewAnimation(texture rl.Texture2D, point rl.Vector2, size Size, frameCount byte) *Animation {
 	self := &Animation{}
 
 	self.point = point

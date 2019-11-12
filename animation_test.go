@@ -8,7 +8,7 @@ import (
 )
 
 func TestAnimation(T *testing.T) {
-	a := New(rl.Texture2D{}, rl.Vector2{X: 0, Y: 0}, Size{Width: 32, Height: 32}, 2)
+	a := NewAnimation(rl.Texture2D{}, rl.Vector2{X: 0, Y: 0}, Size{Width: 32, Height: 32}, 2)
 
 	frame := a.Get(0)
 
