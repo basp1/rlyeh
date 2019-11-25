@@ -5,8 +5,10 @@ import (
 )
 
 type Label struct {
-	id   int32
-	Text string
+	id int32
+
+	Text            string
+	BackgroundColor rl.Color
 
 	Parent Widget
 
@@ -22,6 +24,7 @@ func NewLabel(align Align, fill Fill, text string) *Label {
 	self.Fill = fill
 
 	self.Text = text
+	self.BackgroundColor = rl.NewColor(0, 0, 0, 0)
 
 	return self
 }
@@ -76,12 +79,11 @@ func (self *Label) Update(dt float32) {
 func (self *Label) Draw() {
 	textColor := style.LabelTextColor
 	border := rl.NewColor(0, 0, 0, 0)
-	inner := rl.NewColor(0, 0, 0, 0)
 
 	b := self.Bounds.ToInt32()
 	textWidth := rl.MeasureText(self.Text, int32(style.GlobalTextFontsize))
 
 	rl.DrawRectangleRec(self.Bounds, border)
-	rl.DrawRectangle(b.X+int32(style.LabelBorderWidth), b.Y+int32(style.LabelBorderWidth), b.Width-(2*int32(style.LabelBorderWidth)), b.Height-(2*int32(style.LabelBorderWidth)), inner)
+	rl.DrawRectangle(b.X+int32(style.LabelBorderWidth), b.Y+int32(style.LabelBorderWidth), b.Width-(2*int32(style.LabelBorderWidth)), b.Height-(2*int32(style.LabelBorderWidth)), self.BackgroundColor)
 	rl.DrawText(self.Text, b.X+((b.Width/2)-(textWidth/2)), b.Y+((b.Height/2)-(int32(style.GlobalTextFontsize)/2)), int32(style.GlobalTextFontsize), textColor)
 }
