@@ -2,6 +2,7 @@ package main
 
 import (
 	"math/rand"
+	"time"
 
 	"github.com/basp1/rlyeh"
 
@@ -17,7 +18,7 @@ func main() {
 	app := rlyeh.NewApplication(SCREEN_WIDTH, SCREEN_HEIGHT, "Example")
 
 	dialog := rlyeh.OkCancel("Message", func() {
-		rlyeh.Notify(2, "Ok pressed...")
+		rlyeh.Notify(2*time.Second, "Ok pressed...")
 		rlyeh.GetApplication().SetOption("text", "Bye")
 	})
 
@@ -36,7 +37,7 @@ func NewWindow(dialog *rlyeh.Dialog) *rlyeh.Window {
 	vbox.Add(rlyeh.NewLabel(rlyeh.Auto, rlyeh.Both, "Label"))
 
 	file := rlyeh.NewOpenFileDialog("../", func(item string) {
-		rlyeh.Notify(1, item)
+		rlyeh.Notify(2*time.Second, item)
 	})
 	rlyeh.GetApplication().Add(file)
 
@@ -53,7 +54,7 @@ func NewWindow(dialog *rlyeh.Dialog) *rlyeh.Window {
 		if nil == text {
 			text = "Hello"
 		}
-		rlyeh.Notify(5, "%s %s!", text, RandStringRunes(rand.Int()%10))
+		rlyeh.Notify(5*time.Second, "%s %s!", text, RandStringRunes(rand.Int()%10))
 	}))
 
 	hbox.Add(rlyeh.NewCheckbox(rlyeh.Auto, rlyeh.None))

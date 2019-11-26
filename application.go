@@ -175,8 +175,8 @@ func (self *Application) update(dt float32) {
 	height := float32(self.Height)
 	filtered := make([]*Notification, 0)
 	for i := 0; i < len(notifications); i++ {
-		notifications[i].Seconds -= dt
-		if notifications[i].Seconds > 0 {
+		notifications[i].Duration -= time.Nanosecond * time.Duration(1e9*dt)
+		if notifications[i].Duration > 0 {
 			height -= float32(style.GlobalTextFontsize)
 			notifications[i].Point.Y = height
 			filtered = append(filtered, notifications[i])
