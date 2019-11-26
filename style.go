@@ -90,7 +90,7 @@ func NewStyle() *Style {
 	style.ButtonDefaultInsideColor = rl.NewColor(0xc8, 0xc8, 0xc8, 0xff)
 	style.ButtonDefaultTextColor = rl.NewColor(0x4d, 0x4d, 0x4d, 0xff)
 	style.ButtonHoverBorderColor = rl.NewColor(0xc8, 0xc8, 0xc8, 0xff)
-	style.ButtonHoverInsideColor = rl.NewColor(0xff, 0xff, 0xff, 0xff)
+	style.ButtonHoverInsideColor = rl.White
 	style.ButtonHoverTextColor = rl.NewColor(0x86, 0x86, 0x86, 0xff)
 	style.ButtonPressedBorderColor = rl.NewColor(0x7b, 0xb0, 0xd6, 0xff)
 	style.ButtonPressedInsideColor = rl.NewColor(0xbc, 0xec, 0xff, 0xff)
@@ -104,7 +104,7 @@ func NewStyle() *Style {
 	style.ComboboxDefaultTextColor = rl.NewColor(0x82, 0x82, 0x82, 0xff)
 	style.ComboboxDefaultListTextColor = rl.NewColor(0x82, 0x82, 0x82, 0xff)
 	style.ComboboxHoverBorderColor = rl.NewColor(0xc8, 0xc8, 0xc8, 0xff)
-	style.ComboboxHoverInsideColor = rl.NewColor(0xff, 0xff, 0xff, 0xff)
+	style.ComboboxHoverInsideColor = rl.White
 	style.ComboboxHoverTextColor = rl.NewColor(0x82, 0x82, 0x82, 0xff)
 	style.ComboboxHoverListTextColor = rl.NewColor(0x82, 0x82, 0x82, 0xff)
 	style.ComboboxPressedBorderColor = rl.NewColor(0x7b, 0xb0, 0xd6, 0xff)
@@ -114,9 +114,9 @@ func NewStyle() *Style {
 	style.ComboboxPressedListInsideColor = rl.NewColor(0x66, 0xe7, 0xff, 0xff)
 	style.ComboboxPressedListTextColor = rl.NewColor(0x00, 0x78, 0xac, 0xff)
 	style.CheckboxDefaultBorderColor = rl.NewColor(0x82, 0x82, 0x82, 0xff)
-	style.CheckboxDefaultInsideColor = rl.NewColor(0xff, 0xff, 0xff, 0xff)
+	style.CheckboxDefaultInsideColor = rl.White
 	style.CheckboxHoverBorderColor = rl.NewColor(0xc8, 0xc8, 0xc8, 0xff)
-	style.CheckboxHoverInsideColor = rl.NewColor(0xff, 0xff, 0xff, 0xff)
+	style.CheckboxHoverInsideColor = rl.White
 	style.CheckboxClickBorderColor = rl.NewColor(0x66, 0xe7, 0xff, 0xff)
 	style.CheckboxClickInsideColor = rl.NewColor(0xdd, 0xf5, 0xff, 0xff)
 	style.CheckboxInsideWidth = 1
