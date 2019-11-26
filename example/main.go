@@ -35,9 +35,17 @@ func NewWindow(dialog *rlyeh.Dialog) *rlyeh.Window {
 	var vbox rlyeh.Layout = rlyeh.NewVBox(rlyeh.Auto, rlyeh.Both)
 	vbox.Add(rlyeh.NewLabel(rlyeh.Auto, rlyeh.Both, "Label"))
 
+	file := rlyeh.NewOpenFileDialog("../", func(item string) {
+		rlyeh.Notify(1, item)
+	})
+	rlyeh.GetApplication().Add(file)
+
 	hbox := rlyeh.NewHBox(rlyeh.Center, rlyeh.None)
 	hbox.Add(rlyeh.NewButton(rlyeh.Auto, rlyeh.None, "Open dialog", func() {
 		dialog.Open()
+	}))
+	hbox.Add(rlyeh.NewButton(rlyeh.Auto, rlyeh.None, "File dialog", func() {
+		file.Open()
 	}))
 
 	hbox.Add(rlyeh.NewButton(rlyeh.Auto, rlyeh.None, "Notify", func() {
