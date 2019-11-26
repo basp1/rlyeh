@@ -106,7 +106,7 @@ func (self *ListView) Update(dt float32) {
 		j := self.upper + i
 		if j < len(self.items) {
 			switch GetState(label.GetBounds()) {
-			case Pressed:
+			case Released:
 				self.current = j
 			}
 		}
