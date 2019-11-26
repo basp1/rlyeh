@@ -10,61 +10,64 @@ import (
 )
 
 type Style struct {
-	GlobalBaseColor                rl.Color
-	GlobalBorderColor              rl.Color
-	GlobalTextColor                rl.Color
-	GlobalTextFontsize             int
-	GlobalBorderHeight             int
-	GlobalBackgroundColor          rl.Color
-	GlobalLinesColor               rl.Color
-	GlobalPadding                  int
-	LabelBorderWidth               int
-	LabelTextColor                 rl.Color
-	LabelTextPadding               int
-	ButtonBorderWidth              int
-	ButtonTextPadding              int
-	ButtonDefaultBorderColor       rl.Color
-	ButtonDefaultInsideColor       rl.Color
-	ButtonDefaultTextColor         rl.Color
-	ButtonHoverBorderColor         rl.Color
-	ButtonHoverInsideColor         rl.Color
-	ButtonHoverTextColor           rl.Color
-	ButtonPressedBorderColor       rl.Color
-	ButtonPressedInsideColor       rl.Color
-	ButtonPressedTextColor         rl.Color
-	ComboboxPadding                int
-	ComboboxWidth                  int
-	ComboboxHeight                 int
-	ComboboxBorderWidth            int
-	ComboboxDefaultBorderColor     rl.Color
-	ComboboxDefaultInsideColor     rl.Color
-	ComboboxDefaultTextColor       rl.Color
-	ComboboxDefaultListTextColor   rl.Color
-	ComboboxHoverBorderColor       rl.Color
-	ComboboxHoverInsideColor       rl.Color
-	ComboboxHoverTextColor         rl.Color
-	ComboboxHoverListTextColor     rl.Color
-	ComboboxPressedBorderColor     rl.Color
-	ComboboxPressedInsideColor     rl.Color
-	ComboboxPressedTextColor       rl.Color
-	ComboboxPressedListBorderColor rl.Color
-	ComboboxPressedListInsideColor rl.Color
-	ComboboxPressedListTextColor   rl.Color
-	CheckboxDefaultBorderColor     rl.Color
-	CheckboxDefaultInsideColor     rl.Color
-	CheckboxHoverBorderColor       rl.Color
-	CheckboxHoverInsideColor       rl.Color
-	CheckboxClickBorderColor       rl.Color
-	CheckboxClickInsideColor       rl.Color
-	CheckboxDefaultActiveColor     rl.Color
-	CheckboxInsideWidth            int
-	TextboxBorderWidth             int
-	TextboxBorderColor             rl.Color
-	TextboxActiveBorderColor       rl.Color
-	TextboxInsideColor             rl.Color
-	TextboxTextColor               rl.Color
-	TextboxLineColor               rl.Color
-	TextboxTextFontsize            int
+	GlobalBaseColor                 rl.Color
+	GlobalBorderColor               rl.Color
+	GlobalTextColor                 rl.Color
+	GlobalTextFontsize              int
+	GlobalBorderHeight              int
+	GlobalBackgroundColor           rl.Color
+	GlobalLinesColor                rl.Color
+	GlobalPadding                   int
+	LabelBorderWidth                int
+	LabelTextColor                  rl.Color
+	LabelTextPadding                int
+	ButtonBorderWidth               int
+	ButtonTextPadding               int
+	ButtonDefaultBorderColor        rl.Color
+	ButtonDefaultInsideColor        rl.Color
+	ButtonDefaultTextColor          rl.Color
+	ButtonHoverBorderColor          rl.Color
+	ButtonHoverInsideColor          rl.Color
+	ButtonHoverTextColor            rl.Color
+	ButtonPressedBorderColor        rl.Color
+	ButtonPressedInsideColor        rl.Color
+	ButtonPressedTextColor          rl.Color
+	ComboboxPadding                 int
+	ComboboxWidth                   int
+	ComboboxHeight                  int
+	ComboboxBorderWidth             int
+	ComboboxDefaultBorderColor      rl.Color
+	ComboboxDefaultInsideColor      rl.Color
+	ComboboxDefaultTextColor        rl.Color
+	ComboboxDefaultListTextColor    rl.Color
+	ComboboxHoverBorderColor        rl.Color
+	ComboboxHoverInsideColor        rl.Color
+	ComboboxHoverTextColor          rl.Color
+	ComboboxHoverListTextColor      rl.Color
+	ComboboxPressedBorderColor      rl.Color
+	ComboboxPressedInsideColor      rl.Color
+	ComboboxPressedTextColor        rl.Color
+	ComboboxPressedListBorderColor  rl.Color
+	ComboboxPressedListInsideColor  rl.Color
+	ComboboxPressedListTextColor    rl.Color
+	CheckboxDefaultBorderColor      rl.Color
+	CheckboxDefaultInsideColor      rl.Color
+	CheckboxHoverBorderColor        rl.Color
+	CheckboxHoverInsideColor        rl.Color
+	CheckboxClickBorderColor        rl.Color
+	CheckboxClickInsideColor        rl.Color
+	CheckboxDefaultActiveColor      rl.Color
+	CheckboxInsideWidth             int
+	TextboxBorderWidth              int
+	TextboxBorderColor              rl.Color
+	TextboxActiveBorderColor        rl.Color
+	TextboxInsideColor              rl.Color
+	TextboxTextColor                rl.Color
+	TextboxLineColor                rl.Color
+	TextboxTextFontsize             int
+	ListviewTextColor               rl.Color
+	ListviewSelectedTextColor       rl.Color
+	ListviewSelectedBackgroundColor rl.Color
 }
 
 func NewStyle() *Style {
@@ -121,10 +124,12 @@ func NewStyle() *Style {
 	style.TextboxBorderColor = rl.NewColor(0x82, 0x82, 0x82, 0xff)
 	style.TextboxActiveBorderColor = rl.NewColor(0x7b, 0xb0, 0xd6, 0xff)
 	style.TextboxInsideColor = rl.NewColor(0xf5, 0xf5, 0xf5, 0xff)
-	style.TextboxTextColor = rl.NewColor(0x00, 0x00, 0x00, 0xff)
-	style.TextboxLineColor = rl.NewColor(0x00, 0x00, 0x00, 0xff)
+	style.TextboxTextColor = rl.Black
+	style.TextboxLineColor = rl.Black
 	style.TextboxTextFontsize = 10
-
+	style.ListviewTextColor = rl.Black
+	style.ListviewSelectedTextColor = rl.White
+	style.ListviewSelectedBackgroundColor = rl.Blue
 	return style
 }
 

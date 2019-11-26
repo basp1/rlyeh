@@ -7,8 +7,10 @@ import (
 type Label struct {
 	id int32
 
-	Text            string
+	Text string
+
 	BackgroundColor rl.Color
+	TextColor       rl.Color
 
 	Parent Widget
 
@@ -24,7 +26,9 @@ func NewLabel(align Align, fill Fill, text string) *Label {
 	self.Fill = fill
 
 	self.Text = text
-	self.BackgroundColor = rl.NewColor(0, 0, 0, 0)
+
+	self.BackgroundColor = style.GlobalBackgroundColor
+	self.TextColor = style.LabelTextColor
 
 	return self
 }
@@ -77,7 +81,7 @@ func (self *Label) Update(dt float32) {
 }
 
 func (self *Label) Draw() {
-	textColor := style.LabelTextColor
+	textColor := self.TextColor
 	border := rl.NewColor(0, 0, 0, 0)
 
 	b := self.Bounds.ToInt32()
