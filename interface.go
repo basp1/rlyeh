@@ -40,4 +40,5 @@ type Layout interface {
 
 	Add(Widget)
 	GetWidgets() []Widget
+	Clear()
 }

@@ -158,3 +158,7 @@ func (self *VBox) Draw() {
 func (self *VBox) GetWidgets() []Widget {
 	return self.Widgets
 }
+
+func (self *VBox) Clear() {
+	self.Widgets = []Widget{}
+}

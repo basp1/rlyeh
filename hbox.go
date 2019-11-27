@@ -158,3 +158,7 @@ func (self *HBox) Draw() {
 func (self *HBox) GetWidgets() []Widget {
 	return self.Widgets
 }
+
+func (self *HBox) Clear() {
+	self.Widgets = []Widget{}
+}
