@@ -16,9 +16,12 @@ func GetApplication() *Application {
 }
 
 type Application struct {
+	Title string
+
 	Width  int
 	Height int
-	Title  string
+
+	shouldClose bool
 
 	movables []Form
 	forms    []Form
@@ -30,9 +33,12 @@ type Application struct {
 func NewApplication(width, height int, title string) *Application {
 	self := &Application{}
 
+	self.Title = title
+
 	self.Width = width
 	self.Height = height
-	self.Title = title
+
+	self.shouldClose = false
 
 	self.movables = make([]Form, 0)
 	self.forms = make([]Form, 0)
@@ -139,11 +145,15 @@ func (self *Application) Run() {
 		self.draw()
 
 		rl.EndDrawing()
+
+		if self.shouldClose {
+			break
+		}
 	}
 }
 
 func (self *Application) Close() {
-	rl.CloseWindow()
+	self.shouldClose = true
 }
 
 func (self *Application) GetStyle() *Style {
