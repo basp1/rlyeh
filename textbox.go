@@ -20,7 +20,6 @@ type Textbox struct {
 	state         State
 
 	runeCount int
-	text      string
 }
 
 func NewTextbox(align Align, fill Fill, runeCount int) *Textbox {
@@ -33,7 +32,7 @@ func NewTextbox(align Align, fill Fill, runeCount int) *Textbox {
 	self.Fill = fill
 
 	self.runeCount = runeCount
-	self.text = ""
+	self.Text = ""
 
 	return self
 }
@@ -111,13 +110,13 @@ func (self *Textbox) Update(dt float32) {
 		letter = rl.GetKeyPressed()
 		if letter != -1 {
 			if letter >= 32 && letter < 127 {
-				self.text = fmt.Sprintf("%s%c", self.text, letter)
+				self.Text = fmt.Sprintf("%s%c", self.Text, letter)
 			}
 		}
 
 		if rl.IsKeyPressed(rl.KeyBackspace) {
-			if len(self.text) > 0 {
-				self.text = self.text[:len(self.text)-1]
+			if len(self.Text) > 0 {
+				self.Text = self.Text[:len(self.Text)-1]
 			}
 		}
 	}
@@ -136,8 +135,8 @@ func (self *Textbox) Draw() {
 	textPointY := int32(bounds.Y) + int32(style.TextboxBorderWidth) + int32(bounds.Height/2) - int32(style.TextboxTextFontsize)/2
 
 	runeWidth := float32(rl.MeasureText("A", int32(style.GlobalTextFontsize)))
-	runeCount := len(self.text)
-	truncated := self.text[runeCount-int(min(float32(runeCount), boundsInside.Width/runeWidth)):]
+	runeCount := len(self.Text)
+	truncated := self.Text[runeCount-int(min(float32(runeCount), boundsInside.Width/runeWidth)):]
 
 	switch self.state {
 	case Normal:
