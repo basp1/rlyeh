@@ -18,6 +18,9 @@ type Style struct {
 	GlobalBackgroundColor           rl.Color
 	GlobalLinesColor                rl.Color
 	GlobalPadding                   int
+	DialogTitleFontsize             int
+	DialogTitleBackgroundColor      rl.Color
+	DialogTitleTextColor            rl.Color
 	LabelBorderWidth                int
 	LabelTextColor                  rl.Color
 	LabelTextPadding                int
@@ -81,6 +84,9 @@ func NewStyle() *Style {
 	style.GlobalBackgroundColor = rl.NewColor(0xf5, 0xf5, 0xf5, 0xff)
 	style.GlobalLinesColor = rl.NewColor(0x90, 0xab, 0xb5, 0xff)
 	style.GlobalPadding = 2
+	style.DialogTitleFontsize = 10
+	style.DialogTitleBackgroundColor = rl.NewColor(0x90, 0xab, 0xb5, 0xff)
+	style.DialogTitleTextColor = rl.White
 	style.LabelBorderWidth = 1
 	style.LabelTextColor = rl.NewColor(0x4d, 0x4d, 0x4d, 0xff)
 	style.LabelTextPadding = 2

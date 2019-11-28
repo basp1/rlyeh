@@ -12,7 +12,7 @@ import (
 func NewSaveFileDialog(path string, callback func(item string)) *Dialog {
 	items := getFileList(path)
 
-	dialog := NewDialog(rl.Rectangle{100, 100, 0, 0})
+	dialog := NewDialog(rl.Rectangle{100, 100, 0, 0}, "Save file...")
 
 	textbox := NewTextbox(Auto, Horizontal, 20)
 
@@ -61,7 +61,7 @@ func NewSaveFileDialog(path string, callback func(item string)) *Dialog {
 func NewOpenFileDialog(path string, callback func(item string)) *Dialog {
 	items := getFileList(path)
 
-	dialog := NewDialog(rl.Rectangle{100, 100, 0, 0})
+	dialog := NewDialog(rl.Rectangle{100, 100, 0, 0}, "Open file...")
 
 	vbox := NewVBox(Auto, Both)
 

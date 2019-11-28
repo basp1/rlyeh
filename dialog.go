@@ -13,20 +13,19 @@ type Dialog struct {
 	dragPoint rl.Vector2
 
 	modal bool
+
+	Title string
 }
 
-func NewDialog(bounds rl.Rectangle, widgets ...Widget) *Dialog {
+func NewDialog(bounds rl.Rectangle, title string) *Dialog {
 	self := &Dialog{}
 
 	self.id = nextId()
 	self.modal = true
+	self.Title = title
 
-	bounds.Y += float32(style.GlobalBorderHeight)
+	bounds.Y += float32(style.DialogTitleFontsize)
 	self.window = NewWindow(bounds)
-
-	for _, widget := range widgets {
-		self.Add(widget)
-	}
 
 	return self
 }
@@ -56,8 +55,8 @@ func (self *Dialog) Update(dt float32) {
 	pressed := rl.IsMouseButtonDown(rl.MouseLeftButton)
 
 	borderBounds := self.window.GetBounds()
-	borderBounds.Y -= float32(style.GlobalBorderHeight)
-	borderBounds.Height = float32(style.GlobalBorderHeight)
+	borderBounds.Y -= float32(style.DialogTitleFontsize)
+	borderBounds.Height = float32(style.DialogTitleFontsize)
 
 	borderState := GetState(borderBounds)
 
@@ -111,7 +110,9 @@ func (self *Dialog) Draw() {
 	self.window.SetBounds(bounds)
 
 	b := bounds.ToInt32()
-	rl.DrawRectangle(b.X, b.Y-int32(style.GlobalBorderHeight), b.Width, int32(style.GlobalBorderHeight), style.GlobalBorderColor)
+
+	rl.DrawRectangle(b.X, b.Y-int32(style.DialogTitleFontsize), b.Width, int32(style.DialogTitleFontsize), style.DialogTitleBackgroundColor)
+	rl.DrawText(self.Title, b.X+1, b.Y-int32(style.DialogTitleFontsize), int32(style.DialogTitleFontsize), style.DialogTitleTextColor)
 	rl.DrawRectangle(b.X, b.Y, b.Width, b.Height, style.GlobalBackgroundColor)
 	rl.DrawRectangleLines(b.X, b.Y, b.Width, b.Height, style.GlobalLinesColor)
 
