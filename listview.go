@@ -1,31 +1,41 @@
 package rlyeh
 
 import (
+	"time"
+
 	rl "github.com/gen2brain/raylib-go/raylib"
 )
 
 type ListView struct {
-	layout   *HBox
-	onSelect func(string)
+	OnClick       func(string)
+	OnDoubleClick func(string)
+
+	layout *HBox
 
 	items []string
 
 	count   int
 	upper   int
 	current int
+
+	clicked int
+	state   State
+	time    time.Duration
 }
 
-func NewListView(items []string, count int, onSelect func(string)) *ListView {
+func NewListView(items []string, count int) *ListView {
 	self := &ListView{}
 
 	self.layout = NewHBox(Auto, Both)
-	self.onSelect = onSelect
 
 	self.items = items
 
 	self.count = count
 	self.upper = 0
 	self.current = 0
+
+	self.state = Normal
+	self.clicked = -1
 
 	vbox := NewVBox(Auto, None)
 
@@ -56,7 +66,7 @@ func NewListView(items []string, count int, onSelect func(string)) *ListView {
 	return self
 }
 
-func (self *ListView) GetSelected() string {
+func (self *ListView) GetCurrent() string {
 	return self.items[self.current]
 }
 
@@ -100,42 +110,51 @@ func (self *ListView) Update(dt float32) {
 	vbox := self.layout.GetWidgets()[0].(*VBox)
 	labels := vbox.GetWidgets()
 
+	self.time += time.Duration(1e9 * dt)
+
 	for i := 0; i < self.count; i++ {
 		label := labels[i].(*Label)
 
 		j := self.upper + i
 		if j < len(self.items) {
+			text := self.items[j]
+			label.Text = text
+
 			switch GetState(label.GetBounds()) {
 			case Released:
+
+				if Pressed == self.state && j == self.current {
+					self.time = 0
+					self.clicked = j
+					if nil != self.OnClick {
+						self.OnClick(text)
+					}
+				}
+
 				self.current = j
+				self.state = Released
+				break
+			case Pressed:
+				if j == self.clicked && j == self.current {
+					if (200*time.Millisecond) > self.time && nil != self.OnDoubleClick {
+						self.OnDoubleClick(text)
+						self.clicked = -1
+					}
+				}
+
+				self.current = j
+				self.state = Pressed
+				break
 			}
-		}
-	}
 
-	for i := 0; i < self.count; i++ {
-		label := labels[i].(*Label)
-
-		text := ""
-
-		j := self.upper + i
-		if j < len(self.items) {
-			text = self.items[j]
-
-			if j == self.current {
-				self.current = j
+			if self.current == j {
 				label.BackgroundColor = style.ListviewSelectedBackgroundColor
 				label.TextColor = style.ListviewSelectedTextColor
-
-				if nil != self.onSelect {
-					self.onSelect(text)
-				}
 			} else {
 				label.BackgroundColor = style.GlobalBackgroundColor
 				label.TextColor = style.ListviewTextColor
 			}
 		}
-
-		label.Text = text
 	}
 
 	self.layout.Update(dt)

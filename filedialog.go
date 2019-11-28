@@ -24,10 +24,12 @@ func NewSaveFileDialog(path string, callback func(item string)) *Dialog {
 
 	vbox := NewVBox(Auto, Both)
 
-	lview := NewListView(items, 10, func(item string) {
+	listview := NewListView(items, 10)
+	listview.OnClick = func(item string) {
 		textbox.Text = item
-	})
-	vbox.Add(lview)
+	}
+
+	vbox.Add(listview)
 
 	vbox.Add(textbox)
 
@@ -63,12 +65,13 @@ func NewOpenFileDialog(path string, callback func(item string)) *Dialog {
 
 	vbox := NewVBox(Auto, Both)
 
-	lview := NewListView(items, 10, nil)
-	vbox.Add(lview)
+	listview := NewListView(items, 10)
+
+	vbox.Add(listview)
 
 	hbox := NewHBox(Right, None)
 	hbox.Add(NewButton(Auto, None, "Open", func() {
-		item := lview.GetSelected()
+		item := listview.GetCurrent()
 		callback(item)
 		dialog.Close()
 	}))
