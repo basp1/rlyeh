@@ -28,16 +28,9 @@ func NewListView(items []string, count int) *ListView {
 
 	self.layout = NewHBox(Auto, Both)
 
-	self.items = items
-
 	self.count = count
-	self.upper = 0
-	self.current = 0
 
-	self.state = Normal
-	self.clicked = -1
-
-	vbox := NewVBox(Auto, None)
+	vbox := NewVBox(Auto, Both)
 
 	for i := 0; i < count; i++ {
 		vbox.Add(NewLabel(Left, None, ""))
@@ -45,25 +38,39 @@ func NewListView(items []string, count int) *ListView {
 
 	self.layout.Add(vbox)
 
-	if len(items) > count {
-		scroll := NewVBox(Auto, Vertical)
-		scroll.Add(NewButton(Top, None, "-", func() {
-			if self.upper > 0 {
-				self.upper -= 1
-				self.current -= 1
-			}
-		}))
-		scroll.Add(NewLabel(Auto, Vertical, ""))
-		scroll.Add(NewButton(Top, None, "+", func() {
-			if self.upper < (len(self.items) - self.count) {
-				self.current += 1
-				self.upper += 1
-			}
-		}))
-		self.layout.Add(scroll)
-	}
+	scroll := NewVBox(Right, Vertical)
+	scroll.Add(NewButton(Top, None, "-", func() {
+		if self.upper > 0 {
+			self.upper -= 1
+			self.current -= 1
+		}
+	}))
+	scroll.Add(NewLabel(Auto, Vertical, ""))
+	scroll.Add(NewButton(Top, None, "+", func() {
+		if self.upper < (len(self.items) - self.count) {
+			self.current += 1
+			self.upper += 1
+		}
+	}))
+	self.layout.Add(scroll)
+
+	self.SetItems(items)
 
 	return self
+}
+
+func (self *ListView) SetItems(items []string) {
+	self.upper = 0
+	self.current = 0
+	self.state = Normal
+	self.clicked = -1
+	self.items = items
+
+	labels := self.layout.GetWidgets()[0].(Layout).GetWidgets()
+	for i := len(items); i < self.count; i++ {
+		label := labels[i].(*Label)
+		label.Text = ""
+	}
 }
 
 func (self *ListView) GetCurrent() string {

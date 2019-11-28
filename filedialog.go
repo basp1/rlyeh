@@ -1,22 +1,16 @@
 package rlyeh
 
 import (
+	"fmt"
 	"io/ioutil"
 	"log"
+	"os"
 
 	rl "github.com/gen2brain/raylib-go/raylib"
 )
 
 func NewSaveFileDialog(path string, callback func(item string)) *Dialog {
-	files, err := ioutil.ReadDir(path)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	items := []string{}
-	for _, f := range files {
-		items = append(items, f.Name())
-	}
+	items := getFileList(path)
 
 	dialog := NewDialog(rl.Rectangle{100, 100, 0, 0})
 
@@ -28,6 +22,20 @@ func NewSaveFileDialog(path string, callback func(item string)) *Dialog {
 	listview.OnClick = func(item string) {
 		textbox.Text = item
 	}
+	listview.OnDoubleClick = func(item string) {
+		name := path + "/" + item
+		fi, err := os.Stat(name)
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
+		switch mode := fi.Mode(); {
+		case mode.IsDir():
+			path = name
+			listview.SetItems(getFileList(path))
+			break
+		}
+	}
 
 	vbox.Add(listview)
 
@@ -35,7 +43,7 @@ func NewSaveFileDialog(path string, callback func(item string)) *Dialog {
 
 	hbox := NewHBox(Right, None)
 	hbox.Add(NewButton(Auto, None, "Save", func() {
-		if "" != textbox.Text {
+		if "" != textbox.Text && nil != callback {
 			callback(textbox.Text)
 		}
 	}))
@@ -51,28 +59,36 @@ func NewSaveFileDialog(path string, callback func(item string)) *Dialog {
 }
 
 func NewOpenFileDialog(path string, callback func(item string)) *Dialog {
-	files, err := ioutil.ReadDir(path)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	items := []string{}
-	for _, f := range files {
-		items = append(items, f.Name())
-	}
+	items := getFileList(path)
 
 	dialog := NewDialog(rl.Rectangle{100, 100, 0, 0})
 
 	vbox := NewVBox(Auto, Both)
 
 	listview := NewListView(items, 10)
+	listview.OnDoubleClick = func(item string) {
+		name := path + item
+		fi, err := os.Stat(name)
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
+		switch mode := fi.Mode(); {
+		case mode.IsDir():
+			path = name
+			listview.SetItems(getFileList(path))
+			break
+		}
+	}
 
 	vbox.Add(listview)
 
 	hbox := NewHBox(Right, None)
 	hbox.Add(NewButton(Auto, None, "Open", func() {
 		item := listview.GetCurrent()
-		callback(item)
+		if nil != callback {
+			callback(item)
+		}
 		dialog.Close()
 	}))
 	hbox.Add(NewButton(Auto, None, "Cancel", func() {
@@ -84,4 +100,27 @@ func NewOpenFileDialog(path string, callback func(item string)) *Dialog {
 	dialog.Add(vbox)
 
 	return dialog
+}
+
+func getFileList(path string) []string {
+	files, err := ioutil.ReadDir(path)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	items := []string{"../"}
+
+	for _, f := range files {
+		if f.IsDir() {
+			items = append(items, f.Name()+"/")
+		}
+	}
+
+	for _, f := range files {
+		if !f.IsDir() {
+			items = append(items, f.Name())
+		}
+	}
+
+	return items
 }
