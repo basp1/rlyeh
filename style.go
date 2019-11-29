@@ -173,4 +173,8 @@ func (self *Style) LoadScaled(filename string, scale float32) {
 	}
 }
 
+func GetStyle() *Style {
+	return style
+}
+
 var style = NewStyle()

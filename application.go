@@ -158,10 +158,6 @@ func (self *Application) Close() {
 	self.shouldClose = true
 }
 
-func (self *Application) GetStyle() *Style {
-	return style
-}
-
 func (self *Application) update(dt float32) {
 	for _, movable := range self.movables {
 		if movable.IsModal() && movable.IsActive() {
