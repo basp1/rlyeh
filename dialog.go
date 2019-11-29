@@ -27,7 +27,20 @@ func NewDialog(bounds rl.Rectangle, title string) *Dialog {
 	bounds.Y += float32(style.DialogTitleFontsize)
 	self.window = NewWindow(bounds)
 
+	app := GetApplication()
+	if nil != app {
+		app.Add(self)
+	}
+
 	return self
+}
+
+func (self *Dialog) GetBounds() rl.Rectangle {
+	return self.window.GetBounds()
+}
+
+func (self *Dialog) SetBounds(bounds rl.Rectangle) {
+	self.window.SetBounds(bounds)
 }
 
 func (self *Dialog) Add(widget Widget) {

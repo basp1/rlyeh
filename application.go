@@ -75,6 +75,8 @@ func (self *Application) RemoveOption(name string) {
 }
 
 func (self *Application) Add(form Form) {
+	self.Remove(form)
+
 	if form.IsMovable() {
 		self.movables = append(self.movables, form)
 	} else {

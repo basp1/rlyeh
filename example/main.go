@@ -22,7 +22,6 @@ func main() {
 		rlyeh.GetApplication().SetOption("text", "Bye")
 	})
 
-	app.Add(dialog)
 	app.Add(NewWindow(dialog))
 
 	app.Run()
@@ -39,7 +38,6 @@ func NewWindow(dialog *rlyeh.Dialog) *rlyeh.Window {
 	file := rlyeh.NewOpenFileDialog("../", func(item string) {
 		rlyeh.Notify(2*time.Second, item)
 	})
-	rlyeh.GetApplication().Add(file)
 
 	hbox := rlyeh.NewHBox(rlyeh.Center, rlyeh.None)
 	hbox.Add(rlyeh.NewButton(rlyeh.Auto, rlyeh.None, "Open dialog", func() {
