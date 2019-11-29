@@ -76,10 +76,16 @@ func (self *Combobox) GetBounds() rl.Rectangle {
 }
 
 func (self *Combobox) SetBounds(bounds rl.Rectangle) {
+	app := GetApplication()
+
 	self.label.SetBounds(bounds)
 	b := self.dialog.GetBounds()
 	b.X = bounds.X
-	b.Y = bounds.Y - b.Height - bounds.Height
+
+	b.Y = bounds.Y + b.Height
+	if (b.Y + self.dialog.GetBounds().Height) > app.GetBounds().Height {
+		b.Y = bounds.Y - b.Height - bounds.Height
+	}
 	b.Width = bounds.Width
 	self.dialog.SetBounds(b)
 }
