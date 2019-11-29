@@ -57,6 +57,10 @@ func NewApplication(width, height int, title string) *Application {
 	return self
 }
 
+func (self *Application) GetBounds() rl.Rectangle {
+	return rl.Rectangle{X: 0, Y: 0, Width: float32(self.Width), Height: float32(self.Height)}
+}
+
 func (self *Application) GetOption(name string) interface{} {
 	value, ok := self.options[name]
 	if !ok {
