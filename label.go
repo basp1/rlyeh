@@ -7,8 +7,10 @@ import (
 type Label struct {
 	id int32
 
-	Text string
+	MinWidth float32
+	Text     string
 
+	BorderColor     rl.Color
 	BackgroundColor rl.Color
 	TextColor       rl.Color
 
@@ -74,6 +76,10 @@ func (self *Label) GetDataSize() Size {
 	size.Width += float32(style.LabelTextPadding)
 	size.Height += float32(style.LabelTextPadding) / 2
 
+	if size.Width < self.MinWidth {
+		size.Width = self.MinWidth
+	}
+
 	return size
 }
 
@@ -82,12 +88,11 @@ func (self *Label) Update(dt float32) {
 
 func (self *Label) Draw() {
 	textColor := self.TextColor
-	border := rl.NewColor(0, 0, 0, 0)
 
 	b := self.Bounds.ToInt32()
 	textWidth := rl.MeasureText(self.Text, int32(style.GlobalTextFontsize))
 
-	rl.DrawRectangleRec(self.Bounds, border)
+	rl.DrawRectangleLinesEx(self.Bounds, int32(style.LabelBorderWidth), self.BorderColor)
 	rl.DrawRectangle(b.X+int32(style.LabelBorderWidth), b.Y+int32(style.LabelBorderWidth), b.Width-(2*int32(style.LabelBorderWidth)), b.Height-(2*int32(style.LabelBorderWidth)), self.BackgroundColor)
 	rl.DrawText(self.Text, b.X+((b.Width/2)-(textWidth/2)), b.Y+((b.Height/2)-(int32(style.GlobalTextFontsize)/2)), int32(style.GlobalTextFontsize), textColor)
 }
