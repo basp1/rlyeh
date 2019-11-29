@@ -7,8 +7,7 @@ import (
 type Label struct {
 	id int32
 
-	MinWidth float32
-	Text     string
+	Text string
 
 	BorderColor     rl.Color
 	BackgroundColor rl.Color
@@ -75,10 +74,6 @@ func (self *Label) GetDataSize() Size {
 
 	size.Width += float32(style.LabelTextPadding)
 	size.Height += float32(style.LabelTextPadding) / 2
-
-	if size.Width < self.MinWidth {
-		size.Width = self.MinWidth
-	}
 
 	return size
 }

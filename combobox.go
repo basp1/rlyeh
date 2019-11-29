@@ -33,7 +33,6 @@ func NewCombobox(align Align, fill Fill, items []string) *Combobox {
 	}
 
 	self.longest = float32(rl.MeasureText("  "+self.strings[max], int32(style.GlobalTextFontsize)))
-	self.label.MinWidth = 2 + self.longest
 
 	self.dialog = NewDialog(rl.Rectangle{X: 0, Y: 0, Width: self.longest, Height: float32(len(items) * style.GlobalTextFontsize)}, "")
 	self.dialog.Decoration = false
@@ -94,7 +93,13 @@ func (self *Combobox) GetFill() Fill {
 }
 
 func (self *Combobox) GetDataSize() Size {
-	return self.label.GetDataSize()
+	size := self.label.GetDataSize()
+
+	if size.Width < (2 + self.longest) {
+		size.Width = 2 + self.longest
+	}
+
+	return size
 }
 
 func (self *Combobox) Update(dt float32) {
