@@ -43,6 +43,8 @@ func NewListView(items []string, count int) *ListView {
 		if self.upper > 0 {
 			self.upper -= 1
 			self.current -= 1
+		} else if self.current > 0 {
+			self.current -= 1
 		}
 	}))
 	scroll.Add(NewLabel(Auto, Vertical, ""))
@@ -50,6 +52,8 @@ func NewListView(items []string, count int) *ListView {
 		if self.upper < (len(self.items) - self.count) {
 			self.current += 1
 			self.upper += 1
+		} else if self.current < (len(self.items) - 1) {
+			self.current += 1
 		}
 	}))
 	self.layout.Add(scroll)
