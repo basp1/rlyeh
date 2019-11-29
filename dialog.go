@@ -14,7 +14,8 @@ type Dialog struct {
 
 	modal bool
 
-	Title string
+	Title      string
+	Decoration bool
 }
 
 func NewDialog(bounds rl.Rectangle, title string) *Dialog {
@@ -22,7 +23,9 @@ func NewDialog(bounds rl.Rectangle, title string) *Dialog {
 
 	self.id = nextId()
 	self.modal = true
+
 	self.Title = title
+	self.Decoration = true
 
 	bounds.Y += float32(style.DialogTitleFontsize)
 	self.window = NewWindow(bounds)
@@ -67,24 +70,26 @@ func (self *Dialog) Update(dt float32) {
 
 	pressed := rl.IsMouseButtonDown(rl.MouseLeftButton)
 
-	borderBounds := self.window.GetBounds()
-	borderBounds.Y -= float32(style.DialogTitleFontsize)
-	borderBounds.Height = float32(style.DialogTitleFontsize)
+	if self.Decoration {
+		borderBounds := self.window.GetBounds()
+		borderBounds.Y -= float32(style.DialogTitleFontsize)
+		borderBounds.Height = float32(style.DialogTitleFontsize)
 
-	borderState := GetState(borderBounds)
+		borderState := GetState(borderBounds)
 
-	if !pressed {
-		self.dragState = Normal
-	} else if Pressed == borderState && Pressed != self.dragState {
-		self.dragState = Pressed
-		self.dragPoint = rl.GetMousePosition()
-	} else if pressed && Pressed == self.dragState {
-		bounds := self.window.GetBounds()
-		mousePoint := rl.GetMousePosition()
-		bounds.X += mousePoint.X - self.dragPoint.X
-		bounds.Y += mousePoint.Y - self.dragPoint.Y
-		self.dragPoint = mousePoint
-		self.window.SetBounds(bounds)
+		if !pressed {
+			self.dragState = Normal
+		} else if Pressed == borderState && Pressed != self.dragState {
+			self.dragState = Pressed
+			self.dragPoint = rl.GetMousePosition()
+		} else if pressed && Pressed == self.dragState {
+			bounds := self.window.GetBounds()
+			mousePoint := rl.GetMousePosition()
+			bounds.X += mousePoint.X - self.dragPoint.X
+			bounds.Y += mousePoint.Y - self.dragPoint.Y
+			self.dragPoint = mousePoint
+			self.window.SetBounds(bounds)
+		}
 	}
 
 	self.window.Update(dt)
@@ -124,8 +129,10 @@ func (self *Dialog) Draw() {
 
 	b := bounds.ToInt32()
 
-	rl.DrawRectangle(b.X, b.Y-int32(style.DialogTitleFontsize), b.Width, int32(style.DialogTitleFontsize), style.DialogTitleBackgroundColor)
-	rl.DrawText(self.Title, b.X+1, b.Y-int32(style.DialogTitleFontsize), int32(style.DialogTitleFontsize), style.DialogTitleTextColor)
+	if self.Decoration {
+		rl.DrawRectangle(b.X, b.Y-int32(style.DialogTitleFontsize), b.Width, int32(style.DialogTitleFontsize), style.DialogTitleBackgroundColor)
+		rl.DrawText(self.Title, b.X+1, b.Y-int32(style.DialogTitleFontsize), int32(style.DialogTitleFontsize), style.DialogTitleTextColor)
+	}
 	rl.DrawRectangle(b.X, b.Y, b.Width, b.Height, style.GlobalBackgroundColor)
 	rl.DrawRectangleLines(b.X, b.Y, b.Width, b.Height, style.GlobalLinesColor)
 
