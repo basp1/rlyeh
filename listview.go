@@ -63,6 +63,10 @@ func NewListView(items []string, count int) *ListView {
 	return self
 }
 
+func (self *ListView) RemoveScrollbar() {
+	self.layout.Widgets = self.layout.Widgets[:len(self.layout.Widgets)-1]
+}
+
 func (self *ListView) SetItems(items []string) {
 	self.upper = 0
 	self.current = 0

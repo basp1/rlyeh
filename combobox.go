@@ -5,161 +5,119 @@ import (
 )
 
 type Combobox struct {
-	id     int32
-	Parent Widget
+	label *Label
 
-	Bounds rl.Rectangle
-	Align  Align
-	Fill   Fill
+	dialog   *Dialog
+	listview *ListView
 
 	strings []string
-	active  int
 	longest float32
 
-	state    State
-	unrolled bool
+	state State
 }
 
-func NewCombobox(align Align, fill Fill, strings []string) *Combobox {
+func NewCombobox(align Align, fill Fill, items []string) *Combobox {
 	self := &Combobox{}
 
-	self.Align = align
-	self.Fill = fill
+	self.strings = items
+	self.label = NewLabel(align, fill, items[0])
+	self.label.BorderColor = style.ButtonDefaultBorderColor
 
-	self.strings = strings
-
-	self.active = 0
 	self.state = Normal
-	self.unrolled = false
 
 	max := 0
-	for i, str := range strings {
-		if len(str) > len(strings[max]) {
+	for i, str := range items {
+		if len(str) > len(items) {
 			max = i
 		}
 	}
 
 	self.longest = float32(rl.MeasureText("  "+self.strings[max], int32(style.GlobalTextFontsize)))
+	self.label.MinWidth = 2 + self.longest
+
+	self.dialog = NewDialog(rl.Rectangle{X: 0, Y: 0, Width: self.longest, Height: float32(len(items) * style.GlobalTextFontsize)}, "")
+	self.dialog.Decoration = false
+
+	count := len(items)
+	if count > 9 {
+		count = 9
+	}
+	self.listview = NewListView(items, count)
+	if count == len(items) {
+		self.listview.RemoveScrollbar()
+	}
+	self.listview.OnClick = func(item string) {
+		self.label.Text = item
+		self.dialog.Close()
+	}
+	self.dialog.Add(self.listview)
+	self.dialog.Close()
 
 	return self
 }
 
 func (self *Combobox) GetId() int32 {
-	return self.id
+	return self.label.id
 }
 
 func (self *Combobox) SetId(id int32) {
-	self.id = id
+	self.label.SetId(id)
 }
 
 func (self *Combobox) GetParent() Widget {
-	return self.Parent
+	return self.label.GetParent()
 }
 
 func (self *Combobox) SetParent(parent Widget) {
-	self.Parent = parent
+	self.label.SetParent(parent)
 }
 
 func (self *Combobox) GetBounds() rl.Rectangle {
-	return self.Bounds
+	return self.label.GetBounds()
 }
 
 func (self *Combobox) SetBounds(bounds rl.Rectangle) {
-	self.Bounds = bounds
+	self.label.SetBounds(bounds)
+	b := self.dialog.GetBounds()
+	b.X = bounds.X
+	b.Y = bounds.Y - b.Height - bounds.Height
+	b.Width = bounds.Width
+	self.dialog.SetBounds(b)
 }
 
 func (self *Combobox) GetAlign() Align {
-	return self.Align
+	return self.label.GetAlign()
 }
 
 func (self *Combobox) GetFill() Fill {
-	return self.Fill
+	return self.label.GetFill()
 }
 
 func (self *Combobox) GetDataSize() Size {
-	var size Size
-
-	size.Width = self.longest
-	size.Width += float32(style.ComboboxWidth)
-	size.Width += float32(style.ComboboxPadding)
-
-	if style.GlobalTextFontsize < style.ComboboxHeight {
-		size.Height = float32(style.ComboboxHeight)
-	} else {
-		size.Height = float32(style.GlobalTextFontsize)
-	}
-	size.Height += float32(style.ComboboxPadding) / 2
-
-	return size
-}
-
-func (self *Combobox) GetActive() int {
-	return self.active
+	return self.label.GetDataSize()
 }
 
 func (self *Combobox) Update(dt float32) {
-	bounds := self.Bounds
+	bounds := self.GetBounds()
 
 	state := GetState(bounds)
 
-	if !self.unrolled && Pressed != self.state && Pressed == state {
-		self.unrolled = true
-	}
-	if self.unrolled && Pressed != self.state && Normal == state {
-		self.unrolled = false
+	if self.dialog.IsActive() {
+		self.dialog.Update(dt)
+	} else if Pressed == self.state && Released == state {
+		self.dialog.Open()
+		self.Update(0)
+	} else {
+		self.label.Update(dt)
 	}
 
 	self.state = state
 }
 
 func (self *Combobox) Draw() {
-	b := self.Bounds.ToInt32()
-
-	if !self.unrolled {
-		switch self.state {
-		case Normal:
-			rl.DrawRectangle(b.X, b.Y, b.Width, b.Height, style.ComboboxDefaultBorderColor)
-			rl.DrawRectangle(b.X+int32(style.ComboboxBorderWidth), b.Y+int32(style.ComboboxBorderWidth), b.Width-(2*int32(style.ComboboxBorderWidth)), b.Height-(2*int32(style.ComboboxBorderWidth)), style.ComboboxDefaultInsideColor)
-			rl.DrawText(self.strings[self.active], b.X+((b.Width/2)-(rl.MeasureText(self.strings[self.active], int32(style.GlobalTextFontsize))/2)), b.Y+((b.Height/2)-(int32(style.GlobalTextFontsize)/2)), int32(style.GlobalTextFontsize), style.ComboboxDefaultTextColor)
-			break
-		case Focused:
-			rl.DrawRectangle(b.X, b.Y, b.Width, b.Height, style.ComboboxHoverBorderColor)
-			rl.DrawRectangle(b.X+int32(style.ComboboxBorderWidth), b.Y+int32(style.ComboboxBorderWidth), b.Width-(2*int32(style.ComboboxBorderWidth)), b.Height-(2*int32(style.ComboboxBorderWidth)), style.ComboboxHoverInsideColor)
-			rl.DrawText(self.strings[self.active], b.X+((b.Width/2)-(rl.MeasureText(self.strings[self.active], int32(style.GlobalTextFontsize))/2)), b.Y+((b.Height/2)-(int32(style.GlobalTextFontsize)/2)), int32(style.GlobalTextFontsize), style.ComboboxHoverTextColor)
-			break
-		case Pressed:
-			rl.DrawRectangle(b.X, b.Y, b.Width, b.Height, style.ComboboxPressedBorderColor)
-			rl.DrawRectangle(b.X+int32(style.ComboboxBorderWidth), b.Y+int32(style.ComboboxBorderWidth), b.Width-(2*int32(style.ComboboxBorderWidth)), b.Height-(2*int32(style.ComboboxBorderWidth)), style.ComboboxPressedInsideColor)
-			rl.DrawText(self.strings[self.active], b.X+((b.Width/2)-(rl.MeasureText(self.strings[self.active], int32(style.GlobalTextFontsize))/2)), b.Y+((b.Height/2)-(int32(style.GlobalTextFontsize)/2)), int32(style.GlobalTextFontsize), style.ComboboxPressedTextColor)
-			break
-		default:
-			break
-		}
-	} else {
-		itemCount := len(self.strings)
-
-		for i := 0; i < itemCount; i++ {
-			switch self.state {
-			case Normal:
-				rl.DrawRectangle(b.X, b.Y, b.Width, b.Height, style.ComboboxDefaultBorderColor)
-				rl.DrawRectangle(b.X+int32(style.ComboboxBorderWidth), b.Y+int32(style.ComboboxBorderWidth), b.Width-(2*int32(style.ComboboxBorderWidth)), b.Height-(2*int32(style.ComboboxBorderWidth)), style.ComboboxDefaultInsideColor)
-				rl.DrawText(self.strings[i], b.X+((b.Width/2)-(rl.MeasureText(self.strings[i], int32(style.GlobalTextFontsize))/2)), b.Y+((b.Height/2)-(int32(style.GlobalTextFontsize)/2)), int32(style.GlobalTextFontsize), style.ComboboxDefaultTextColor)
-				break
-			case Focused:
-				rl.DrawRectangle(b.X, b.Y, b.Width, b.Height, style.ComboboxHoverBorderColor)
-				rl.DrawRectangle(b.X+int32(style.ComboboxBorderWidth), b.Y+int32(style.ComboboxBorderWidth), b.Width-(2*int32(style.ComboboxBorderWidth)), b.Height-(2*int32(style.ComboboxBorderWidth)), style.ComboboxHoverInsideColor)
-				rl.DrawText(self.strings[i], b.X+((b.Width/2)-(rl.MeasureText(self.strings[i], int32(style.GlobalTextFontsize))/2)), b.Y+((b.Height/2)-(int32(style.GlobalTextFontsize)/2)), int32(style.GlobalTextFontsize), style.ComboboxHoverTextColor)
-				break
-			case Pressed:
-				rl.DrawRectangle(b.X, b.Y, b.Width, b.Height, style.ComboboxPressedBorderColor)
-				rl.DrawRectangle(b.X+int32(style.ComboboxBorderWidth), b.Y+int32(style.ComboboxBorderWidth), b.Width-(2*int32(style.ComboboxBorderWidth)), b.Height-(2*int32(style.ComboboxBorderWidth)), style.ComboboxPressedInsideColor)
-				rl.DrawText(self.strings[i], b.X+((b.Width/2)-(rl.MeasureText(self.strings[i], int32(style.GlobalTextFontsize))/2)), b.Y+((b.Height/2)-(int32(style.GlobalTextFontsize)/2)), int32(style.GlobalTextFontsize), style.ComboboxPressedTextColor)
-				break
-			default:
-				break
-			}
-
-			b.Y -= b.Height
-		}
+	if self.dialog.IsActive() {
+		self.dialog.Draw()
 	}
+	self.label.Draw()
+
 }
