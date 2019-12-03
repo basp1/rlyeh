@@ -43,11 +43,13 @@ type Layout interface {
 	Clear()
 }
 
-type Scrolled interface {
+type Scrollable interface {
 	Widget
 
 	Scroll(int)
+
 	GetCount() int
+
 	GetCurrent() int
 	SetCurrent(int)
 }

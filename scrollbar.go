@@ -5,29 +5,29 @@ import (
 )
 
 type Scrollbar struct {
-	scrolled Scrolled
-	layout   Layout
+	scrollable Scrollable
+	layout     Layout
 
 	state State
 }
 
-func NewScrollbar(fill Fill, scrolled Scrolled) *Scrollbar {
+func NewScrollbar(fill Fill, scrollable Scrollable) *Scrollbar {
 	self := &Scrollbar{}
 
-	self.scrolled = scrolled
+	self.scrollable = scrollable
 	self.state = Normal
 
 	switch fill {
 	case Vertical:
 		self.layout = NewVBox(Right, Vertical)
-		self.layout.Add(NewButton(Top, None, "-", func() { self.scrolled.Scroll(-1) }))
+		self.layout.Add(NewButton(Top, None, "-", func() { self.scrollable.Scroll(-1) }))
 		self.layout.Add(NewLabel(Auto, Vertical, ""))
-		self.layout.Add(NewButton(Bottom, None, "+", func() { self.scrolled.Scroll(1) }))
+		self.layout.Add(NewButton(Bottom, None, "+", func() { self.scrollable.Scroll(1) }))
 	case Horizontal:
 		self.layout = NewHBox(Bottom, Horizontal)
-		self.layout.Add(NewButton(Left, None, "-", func() { self.scrolled.Scroll(-1) }))
+		self.layout.Add(NewButton(Left, None, "-", func() { self.scrollable.Scroll(-1) }))
 		self.layout.Add(NewLabel(Auto, Horizontal, ""))
-		self.layout.Add(NewButton(Right, None, "+", func() { self.scrolled.Scroll(1) }))
+		self.layout.Add(NewButton(Right, None, "+", func() { self.scrollable.Scroll(1) }))
 	default:
 		panic("fill should be 'Vertical' or 'Horizontal'")
 	}
