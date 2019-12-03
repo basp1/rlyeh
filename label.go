@@ -89,5 +89,7 @@ func (self *Label) Draw() {
 
 	rl.DrawRectangleLinesEx(self.Bounds, int32(style.LabelBorderWidth), self.BorderColor)
 	rl.DrawRectangle(b.X+int32(style.LabelBorderWidth), b.Y+int32(style.LabelBorderWidth), b.Width-(2*int32(style.LabelBorderWidth)), b.Height-(2*int32(style.LabelBorderWidth)), self.BackgroundColor)
-	rl.DrawText(self.Text, b.X+((b.Width/2)-(textWidth/2)), b.Y+((b.Height/2)-(int32(style.GlobalTextFontsize)/2)), int32(style.GlobalTextFontsize), textColor)
+	if "" != self.Text {
+		rl.DrawText(self.Text, b.X+((b.Width/2)-(textWidth/2)), b.Y+((b.Height/2)-(int32(style.GlobalTextFontsize)/2)), int32(style.GlobalTextFontsize), textColor)
+	}
 }

@@ -42,3 +42,12 @@ type Layout interface {
 	GetWidgets() []Widget
 	Clear()
 }
+
+type Scrolled interface {
+	Widget
+
+	Scroll(int)
+	GetCount() int
+	GetCurrent() int
+	SetCurrent(int)
+}

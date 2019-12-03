@@ -85,7 +85,7 @@ func NewOpenFileDialog(path string, callback func(item string)) *Dialog {
 
 	hbox := NewHBox(Right, None)
 	hbox.Add(NewButton(Auto, None, "Open", func() {
-		item := listview.GetCurrent()
+		item := listview.GetCurrentItem()
 		if nil != callback {
 			callback(item)
 		}
