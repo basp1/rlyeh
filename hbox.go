@@ -98,9 +98,7 @@ func (self *HBox) Update(dt float32) {
 		widget := self.Widgets[i]
 		widget.Update(dt)
 	}
-}
 
-func (self *HBox) Draw() {
 	x := self.Bounds.X + float32(style.GlobalPadding)
 	bounds := self.Bounds
 
@@ -149,9 +147,15 @@ func (self *HBox) Draw() {
 			widget.SetBounds(newBounds)
 		}
 
-		widget.Draw()
-
 		x += newBounds.Width + float32(style.GlobalPadding)
+	}
+}
+
+func (self *HBox) Draw() {
+	for i := 0; i < len(self.Widgets); i++ {
+		widget := self.Widgets[i]
+
+		widget.Draw()
 	}
 }
 

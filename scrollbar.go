@@ -21,12 +21,12 @@ func NewScrollbar(fill Fill, scrollable Scrollable) *Scrollbar {
 	case Vertical:
 		self.layout = NewVBox(Right, Vertical)
 		self.layout.Add(NewButton(Top, None, "-", func() { self.scrollable.Scroll(-1) }))
-		self.layout.Add(NewLabel(Auto, Vertical, ""))
+		self.layout.Add(NewButton(Auto, Vertical, "=", nil))
 		self.layout.Add(NewButton(Bottom, None, "+", func() { self.scrollable.Scroll(1) }))
 	case Horizontal:
 		self.layout = NewHBox(Bottom, Horizontal)
 		self.layout.Add(NewButton(Left, None, "-", func() { self.scrollable.Scroll(-1) }))
-		self.layout.Add(NewLabel(Auto, Horizontal, ""))
+		self.layout.Add(NewButton(Auto, Horizontal, "=", nil))
 		self.layout.Add(NewButton(Right, None, "+", func() { self.scrollable.Scroll(1) }))
 	default:
 		panic("fill should be 'Vertical' or 'Horizontal'")
@@ -73,6 +73,18 @@ func (self *Scrollbar) GetDataSize() Size {
 
 func (self *Scrollbar) Update(dt float32) {
 	self.layout.Update(dt)
+
+	bounds := self.GetBounds()
+	button := self.layout.GetWidgets()[0]
+	w := button.GetBounds().Width
+	h := button.GetBounds().Height
+	slider := self.layout.GetWidgets()[1]
+
+	slider.SetBounds(rl.Rectangle{X: bounds.X,
+		Y:      bounds.Y + h + (bounds.Height-3*h)*float32(1+self.scrollable.GetCurrent())/float32(self.scrollable.GetCount()),
+		Width:  w,
+		Height: h,
+	})
 }
 
 func (self *Scrollbar) Draw() {

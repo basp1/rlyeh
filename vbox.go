@@ -98,9 +98,7 @@ func (self *VBox) Update(dt float32) {
 		widget := self.Widgets[i]
 		widget.Update(dt)
 	}
-}
 
-func (self *VBox) Draw() {
 	y := self.Bounds.Y + float32(style.GlobalPadding)
 	bounds := self.Bounds
 
@@ -149,9 +147,14 @@ func (self *VBox) Draw() {
 			widget.SetBounds(newBounds)
 		}
 
-		widget.Draw()
-
 		y += newBounds.Height + float32(style.GlobalPadding)
+	}
+}
+
+func (self *VBox) Draw() {
+	for i := 0; i < len(self.Widgets); i++ {
+		widget := self.Widgets[i]
+		widget.Draw()
 	}
 }
 
