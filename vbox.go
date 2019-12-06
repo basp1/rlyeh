@@ -62,11 +62,6 @@ func (self *VBox) GetFill() Fill {
 }
 
 func (self *VBox) Add(widget Widget) {
-	if 0 == widget.GetId() {
-		widget.SetId(nextId())
-	}
-	widget.SetParent(self)
-
 	if nil == self.Widgets {
 		self.Widgets = []Widget{}
 	}
@@ -94,9 +89,11 @@ func (self *VBox) GetDataSize() Size {
 }
 
 func (self *VBox) Update(dt float32) {
-	for i := 0; i < len(self.Widgets); i++ {
-		widget := self.Widgets[i]
-		widget.Update(dt)
+	for _, widget := range self.Widgets {
+		if 0 == widget.GetId() {
+			widget.SetId(nextId())
+		}
+		widget.SetParent(self)
 	}
 
 	y := self.Bounds.Y + float32(style.GlobalPadding)
@@ -148,6 +145,10 @@ func (self *VBox) Update(dt float32) {
 		}
 
 		y += newBounds.Height + float32(style.GlobalPadding)
+	}
+
+	for _, widget := range self.Widgets {
+		widget.Update(dt)
 	}
 }
 

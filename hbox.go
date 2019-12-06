@@ -62,11 +62,6 @@ func (self *HBox) GetFill() Fill {
 }
 
 func (self *HBox) Add(widget Widget) {
-	if 0 == widget.GetId() {
-		widget.SetId(nextId())
-	}
-	widget.SetParent(self)
-
 	if nil == self.Widgets {
 		self.Widgets = []Widget{}
 	}
@@ -94,9 +89,11 @@ func (self *HBox) GetDataSize() Size {
 }
 
 func (self *HBox) Update(dt float32) {
-	for i := 0; i < len(self.Widgets); i++ {
-		widget := self.Widgets[i]
-		widget.Update(dt)
+	for _, widget := range self.Widgets {
+		if 0 == widget.GetId() {
+			widget.SetId(nextId())
+		}
+		widget.SetParent(self)
 	}
 
 	x := self.Bounds.X + float32(style.GlobalPadding)
@@ -148,6 +145,10 @@ func (self *HBox) Update(dt float32) {
 		}
 
 		x += newBounds.Width + float32(style.GlobalPadding)
+	}
+
+	for _, widget := range self.Widgets {
+		widget.Update(dt)
 	}
 }
 
