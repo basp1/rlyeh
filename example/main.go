@@ -40,14 +40,16 @@ func NewWindow(dialog *rlyeh.Dialog) *rlyeh.Window {
 	})
 
 	hbox := rlyeh.NewHBox(rlyeh.Center, rlyeh.None)
-	hbox.Add(rlyeh.NewButton(rlyeh.Auto, rlyeh.None, "Open dialog", func() {
+	button := rlyeh.NewButton(rlyeh.Auto, rlyeh.Vertical, " Open dialog", func() {
 		dialog.Open()
-	}))
-	hbox.Add(rlyeh.NewButton(rlyeh.Auto, rlyeh.None, "File dialog", func() {
+	})
+	button.Image = rl.LoadTexture("arrow.png")
+	hbox.Add(button)
+	hbox.Add(rlyeh.NewButton(rlyeh.Auto, rlyeh.Vertical, "File dialog", func() {
 		file.Open()
 	}))
 
-	hbox.Add(rlyeh.NewButton(rlyeh.Auto, rlyeh.None, "Notify", func() {
+	hbox.Add(rlyeh.NewButton(rlyeh.Auto, rlyeh.Vertical, "Notify", func() {
 		text := rlyeh.GetApplication().GetOption("text")
 		if nil == text {
 			text = "Hello"

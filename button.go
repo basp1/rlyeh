@@ -15,6 +15,8 @@ type Button struct {
 	Fill   Fill
 	State  State
 
+	Image rl.Texture2D
+
 	OnClick func()
 }
 
@@ -69,6 +71,13 @@ func (self *Button) GetDataSize() Size {
 	size.Width = float32(rl.MeasureText(self.Text, int32(style.GlobalTextFontsize)))
 	size.Height = float32(style.GlobalTextFontsize)
 
+	if self.Image.ID > 0 {
+		size.Width += float32(self.Image.Width)
+		if size.Height < float32(self.Image.Height) {
+			size.Height = float32(self.Image.Height)
+		}
+	}
+
 	size.Width += float32(style.ButtonTextPadding)
 	size.Height += float32(style.ButtonTextPadding) / 2
 
@@ -90,27 +99,44 @@ func (self *Button) Draw() {
 	state := self.State
 	text := self.Text
 
+	contentWidth := rl.MeasureText(text, int32(style.GlobalTextFontsize))
+	if self.Image.ID > 0 {
+		contentWidth += self.Image.Width
+	}
+
 	switch state {
 	case Released:
 		rl.DrawRectangle(b.X, b.Y, b.Width, b.Height, style.ButtonDefaultBorderColor)
 		rl.DrawRectangle(b.X+int32(style.ButtonBorderWidth), b.Y+int32(style.ButtonBorderWidth), b.Width-(2*int32(style.ButtonBorderWidth)), b.Height-(2*int32(style.ButtonBorderWidth)), style.ButtonDefaultInsideColor)
-		rl.DrawText(text, b.X+((b.Width/2)-(rl.MeasureText(text, int32(style.GlobalTextFontsize))/2)), b.Y+((b.Height/2)-(int32(style.GlobalTextFontsize)/2)), int32(style.GlobalTextFontsize), style.ButtonDefaultTextColor)
+		if self.Image.ID > 0 {
+			rl.DrawTexture(self.Image, b.X+(b.Width/2-contentWidth/2), b.Y+((b.Height/2)-(self.Image.Height/2)), rl.RayWhite)
+		}
+		rl.DrawText(text, b.X+self.Image.Width+(b.Width/2-contentWidth/2), b.Y+((b.Height/2)-(int32(style.GlobalTextFontsize)/2)), int32(style.GlobalTextFontsize), style.ButtonDefaultTextColor)
 	case Normal:
 		rl.DrawRectangle(b.X, b.Y, b.Width, b.Height, style.ButtonDefaultBorderColor)
 		rl.DrawRectangle(b.X+int32(style.ButtonBorderWidth), b.Y+int32(style.ButtonBorderWidth), b.Width-(2*int32(style.ButtonBorderWidth)), b.Height-(2*int32(style.ButtonBorderWidth)), style.ButtonDefaultInsideColor)
-		rl.DrawText(text, b.X+((b.Width/2)-(rl.MeasureText(text, int32(style.GlobalTextFontsize))/2)), b.Y+((b.Height/2)-(int32(style.GlobalTextFontsize)/2)), int32(style.GlobalTextFontsize), style.ButtonDefaultTextColor)
+		if self.Image.ID > 0 {
+			rl.DrawTexture(self.Image, b.X+(b.Width/2-contentWidth/2), b.Y+((b.Height/2)-(self.Image.Height/2)), rl.RayWhite)
+		}
+		rl.DrawText(text, b.X+self.Image.Width+(b.Width/2-contentWidth/2), b.Y+((b.Height/2)-(int32(style.GlobalTextFontsize)/2)), int32(style.GlobalTextFontsize), style.ButtonDefaultTextColor)
 		break
 
 	case Focused:
 		rl.DrawRectangle(b.X, b.Y, b.Width, b.Height, style.ButtonHoverBorderColor)
 		rl.DrawRectangle(b.X+int32(style.ButtonBorderWidth), b.Y+int32(style.ButtonBorderWidth), b.Width-(2*int32(style.ButtonBorderWidth)), b.Height-(2*int32(style.ButtonBorderWidth)), style.ButtonHoverInsideColor)
-		rl.DrawText(text, b.X+((b.Width/2)-(rl.MeasureText(text, int32(style.GlobalTextFontsize))/2)), b.Y+((b.Height/2)-(int32(style.GlobalTextFontsize)/2)), int32(style.GlobalTextFontsize), style.ButtonHoverTextColor)
+		if self.Image.ID > 0 {
+			rl.DrawTexture(self.Image, b.X+(b.Width/2-contentWidth/2), b.Y+((b.Height/2)-(self.Image.Height/2)), rl.RayWhite)
+		}
+		rl.DrawText(text, b.X+self.Image.Width+(b.Width/2-contentWidth/2), b.Y+((b.Height/2)-(int32(style.GlobalTextFontsize)/2)), int32(style.GlobalTextFontsize), style.ButtonHoverTextColor)
 		break
 
 	case Pressed:
 		rl.DrawRectangle(b.X, b.Y, b.Width, b.Height, style.ButtonPressedBorderColor)
 		rl.DrawRectangle(b.X+int32(style.ButtonBorderWidth), b.Y+int32(style.ButtonBorderWidth), b.Width-(2*int32(style.ButtonBorderWidth)), b.Height-(2*int32(style.ButtonBorderWidth)), style.ButtonPressedInsideColor)
-		rl.DrawText(text, b.X+((b.Width/2)-(rl.MeasureText(text, int32(style.GlobalTextFontsize))/2)), b.Y+((b.Height/2)-(int32(style.GlobalTextFontsize)/2)), int32(style.GlobalTextFontsize), style.ButtonPressedTextColor)
+		if self.Image.ID > 0 {
+			rl.DrawTexture(self.Image, b.X+(b.Width/2-contentWidth/2), b.Y+((b.Height/2)-(self.Image.Height/2)), rl.RayWhite)
+		}
+		rl.DrawText(text, b.X+self.Image.Width+(b.Width/2-contentWidth/2), b.Y+((b.Height/2)-(int32(style.GlobalTextFontsize)/2)), int32(style.GlobalTextFontsize), style.ButtonPressedTextColor)
 		break
 
 	default:
