@@ -2,6 +2,7 @@ package main
 
 import (
 	"math/rand"
+	"strconv"
 	"time"
 
 	"github.com/basp1/rlyeh"
@@ -10,7 +11,7 @@ import (
 )
 
 const (
-	SCREEN_WIDTH  = 640
+	SCREEN_WIDTH  = 800
 	SCREEN_HEIGHT = 480
 )
 
@@ -61,7 +62,17 @@ func NewWindow(dialog *rlyeh.Dialog) *rlyeh.Window {
 	hbox.Add(rlyeh.NewLabel(rlyeh.Auto, rlyeh.None, "check"))
 
 	hbox.Add(rlyeh.NewCombobox(rlyeh.Auto, rlyeh.None, []string{"one", "two", "three"}))
-	hbox.Add(rlyeh.NewTextbox(rlyeh.Auto, rlyeh.None, 8))
+
+	scaleTextbox := rlyeh.NewTextbox(rlyeh.Auto, rlyeh.None, 8)
+	scaleTextbox.Text = "1"
+	hbox.Add(scaleTextbox)
+	hbox.Add(rlyeh.NewButton(rlyeh.Auto, rlyeh.None, "Scale", func() {
+		text := scaleTextbox.Text
+		scale, e := strconv.ParseFloat(text, 32)
+		if nil == e {
+			rlyeh.GetStyle().Scale(float32(scale))
+		}
+	}))
 
 	vbox.Add(hbox)
 

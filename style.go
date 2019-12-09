@@ -164,7 +164,7 @@ func (self *Style) Scale(scale float32) {
 		x, ok := field.Interface().(int)
 		x = int(float32(x) * scale)
 
-		if ok {
+		if ok && x > 0 {
 			field.SetInt(int64(x))
 		}
 
