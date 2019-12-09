@@ -20,14 +20,14 @@ func NewScrollbar(fill Fill, scrollable Scrollable) *Scrollbar {
 	switch fill {
 	case Vertical:
 		self.layout = NewVBox(Right, Vertical)
-		self.layout.Add(NewButton(Top, None, "-", func() { self.scrollable.Scroll(-1) }))
-		self.layout.Add(NewButton(Auto, Vertical, "=", nil))
-		self.layout.Add(NewButton(Bottom, None, "+", func() { self.scrollable.Scroll(1) }))
+		self.layout.Add(NewButton(Top, Horizontal, "-", func() { self.scrollable.Scroll(-1) }))
+		self.layout.Add(NewButton(Auto, Both, "=", nil))
+		self.layout.Add(NewButton(Bottom, Horizontal, "+", func() { self.scrollable.Scroll(1) }))
 	case Horizontal:
 		self.layout = NewHBox(Bottom, Horizontal)
-		self.layout.Add(NewButton(Left, None, "-", func() { self.scrollable.Scroll(-1) }))
-		self.layout.Add(NewButton(Auto, Horizontal, "=", nil))
-		self.layout.Add(NewButton(Right, None, "+", func() { self.scrollable.Scroll(1) }))
+		self.layout.Add(NewButton(Left, Vertical, "-", func() { self.scrollable.Scroll(-1) }))
+		self.layout.Add(NewButton(Auto, Both, "=", nil))
+		self.layout.Add(NewButton(Right, Vertical, "+", func() { self.scrollable.Scroll(1) }))
 	default:
 		panic("fill should be 'Vertical' or 'Horizontal'")
 	}

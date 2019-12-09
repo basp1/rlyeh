@@ -156,9 +156,7 @@ func (self *Style) Load(filename string) {
 	json.Unmarshal(bytes, self)
 }
 
-func (self *Style) LoadScaled(filename string, scale float32) {
-	self.Load(filename)
-
+func (self *Style) Scale(scale float32) {
 	value := reflect.ValueOf(self).Elem()
 
 	for i := 0; i < value.NumField(); i++ {
