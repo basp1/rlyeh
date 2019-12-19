@@ -23,7 +23,7 @@ func NewSaveFileDialog(path string, callback func(item string)) *Dialog {
 		textbox.Text = item
 	}
 	listview.OnDoubleClick = func(item string) {
-		name := path + "/" + item
+		name := path + item
 		fi, err := os.Stat(name)
 		if err != nil {
 			fmt.Println(err)
@@ -44,7 +44,7 @@ func NewSaveFileDialog(path string, callback func(item string)) *Dialog {
 	hbox := NewHBox(Right, None)
 	hbox.Add(NewButton(Auto, None, "Save", func() {
 		if "" != textbox.Text && nil != callback {
-			callback(textbox.Text)
+			callback(path + textbox.Text)
 		}
 	}))
 	hbox.Add(NewButton(Auto, None, "Cancel", func() {
@@ -87,7 +87,7 @@ func NewOpenFileDialog(path string, callback func(item string)) *Dialog {
 	hbox.Add(NewButton(Auto, None, "Open", func() {
 		item := listview.GetCurrentItem()
 		if nil != callback {
-			callback(item)
+			callback(path + item)
 		}
 		dialog.Close()
 	}))
