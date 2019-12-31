@@ -73,7 +73,7 @@ func (self *Checkbox) GetDataSize() Size {
 
 func (self *Checkbox) Update(dt float32) {
 	state := GetState(self.Bounds)
-	if Released == state {
+	if Released == state && Released != self.state {
 		self.Checked = !self.Checked
 	}
 	self.state = state
@@ -81,26 +81,21 @@ func (self *Checkbox) Update(dt float32) {
 
 func (self *Checkbox) Draw() {
 	b := self.Bounds.ToInt32()
+
 	borderWidth := int32(style.LabelBorderWidth)
 
-	switch self.state {
-	case Normal:
+	if self.Checked {
+		rl.DrawRectangleLines(b.X, b.Y, b.Width, b.Height, style.CheckboxDefaultBorderColor)
+
+		rl.DrawLineEx(rl.Vector2{self.Bounds.X + 2*float32(borderWidth), self.Bounds.Y + 2*float32(borderWidth)},
+			rl.Vector2{self.Bounds.X + self.Bounds.Width - 2*float32(borderWidth), self.Bounds.Y + self.Bounds.Height - 2*float32(borderWidth)},
+			float32(borderWidth), style.CheckboxDefaultActiveColor)
+		rl.DrawLineEx(rl.Vector2{self.Bounds.X + self.Bounds.Width - 2*float32(borderWidth), self.Bounds.Y + 2*float32(borderWidth)},
+			rl.Vector2{self.Bounds.X + 2*float32(borderWidth), self.Bounds.Y + self.Bounds.Height - 2*float32(borderWidth)},
+			float32(borderWidth), style.CheckboxDefaultActiveColor)
+	} else {
 		rl.DrawRectangle(b.X, b.Y, b.Width, b.Height, style.CheckboxDefaultBorderColor)
 		rl.DrawRectangle(b.X+borderWidth, b.Y+borderWidth, b.Width-(2*borderWidth), b.Height-(2*borderWidth), style.CheckboxDefaultInsideColor)
-		break
-	case Focused:
-		rl.DrawRectangle(b.X, b.Y, b.Width, b.Height, style.CheckboxHoverBorderColor)
-		rl.DrawRectangle(b.X+borderWidth, b.Y+borderWidth, b.Width-(2*borderWidth), b.Height-(2*borderWidth), style.CheckboxHoverInsideColor)
-		break
-	case Pressed:
-		rl.DrawRectangle(b.X, b.Y, b.Width, b.Height, style.CheckboxClickBorderColor)
-		rl.DrawRectangle(b.X+borderWidth, b.Y+borderWidth, b.Width-(2*borderWidth), b.Height-(2*borderWidth), style.CheckboxClickInsideColor)
-		break
-	default:
-		break
-	}
 
-	if self.Checked {
-		rl.DrawRectangle(b.X+int32(style.CheckboxInsideWidth), b.Y+int32(style.CheckboxInsideWidth), b.Width-(2*int32(style.CheckboxInsideWidth)), b.Height-(2*int32(style.CheckboxInsideWidth)), style.CheckboxDefaultActiveColor)
 	}
 }

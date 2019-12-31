@@ -125,6 +125,7 @@ func NewStyle() *Style {
 	style.CheckboxHoverInsideColor = rl.White
 	style.CheckboxClickBorderColor = rl.NewColor(0x66, 0xe7, 0xff, 0xff)
 	style.CheckboxClickInsideColor = rl.NewColor(0xdd, 0xf5, 0xff, 0xff)
+	style.CheckboxDefaultActiveColor = rl.Black
 	style.CheckboxInsideWidth = 1
 	style.TextboxBorderWidth = 1
 	style.TextboxBorderColor = rl.NewColor(0x82, 0x82, 0x82, 0xff)
