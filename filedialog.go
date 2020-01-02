@@ -43,9 +43,23 @@ func NewSaveFileDialog(path string, callback func(item string)) *Dialog {
 
 	hbox := NewHBox(Right, None)
 	hbox.Add(NewButton(Auto, None, "Save", func() {
+		item := listview.GetCurrentItem()
+		name := path + item
+		fi, err := os.Stat(name)
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
+		if fi.Mode().IsDir() {
+			path = name
+			listview.SetItems(getFileList(path))
+			return
+		}
+
 		if "" != textbox.Text && nil != callback {
 			callback(path + textbox.Text)
 		}
+		dialog.Close()
 	}))
 	hbox.Add(NewButton(Auto, None, "Cancel", func() {
 		dialog.Close()
@@ -86,8 +100,19 @@ func NewOpenFileDialog(path string, callback func(item string)) *Dialog {
 	hbox := NewHBox(Right, None)
 	hbox.Add(NewButton(Auto, None, "Open", func() {
 		item := listview.GetCurrentItem()
+		name := path + item
+		fi, err := os.Stat(name)
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
+		if fi.Mode().IsDir() {
+			path = name
+			listview.SetItems(getFileList(path))
+			return
+		}
 		if nil != callback {
-			callback(path + item)
+			callback(name)
 		}
 		dialog.Close()
 	}))
